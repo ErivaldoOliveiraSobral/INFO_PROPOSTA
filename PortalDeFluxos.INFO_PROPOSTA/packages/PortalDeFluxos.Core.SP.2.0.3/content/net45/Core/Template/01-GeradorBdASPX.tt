@@ -1,0 +1,76 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#
+    var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+	var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+	var dllPath = "";
+	var projectNameBll = "";
+	var jsonPath = "";
+	foreach (Project p in dte.Solution.Projects)
+	{
+		if(p.Name.Contains("BLL"))
+		{	
+			projectNameBll = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			dllPath = solutionDirectory + @"\bin\Debug\";
+		}
+		else if(p.Name.Contains("SP"))
+		{	
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			jsonPath = solutionDirectory + @"\Core\Template\00-ConfiguracaoTT.json";
+		}
+	}
+	String json = System.IO.File.ReadAllText(jsonPath);
+	JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+	object jsonObj = serializer.Deserialize<object>(json);
+    object[] entidades = (object[])((Dictionary<String, object>)jsonObj)["EntidadesBD"];
+	#>
+\<#<#= "@ template debug=\"false\" hostspecific=\"True\" language=\"C#\" " #>\#>
+\<#<#= "@ assembly name=\"System.Core\" " #>\#>
+\<#<#= "@ import namespace=\"System.Linq\" " #>\#>
+\<#<#= "@ import namespace=\"System.Text\" " #>\#>
+\<#<#= "@ import namespace=\"System.Collections.Generic\" " #>\#>
+\<#<#= "@ import namespace=\"System.IO\" " #>\#>
+\<#<#= "@ import namespace=\"System.Reflection\" " #>\#>
+\<#<#= "@ assembly name=\"EnvDTE\" " #>\#>
+\<#<#= "@ import namespace=\"EnvDTE\" " #>\#>
+<#
+	if(dllPath != "")
+    {
+        foreach (string dll in Directory.GetFiles(dllPath, "*.dll"))
+        {
+            if(dll != "")
+                #>\<#<#= "@ assembly name=\""+ dll +"\" "#>\#><#="\n"#><#
+        }
+#>\<#<#= "@ import namespace=\""+ projectNameBll +".Modelo\" "#>\#><#="\n"#><#
+    }
+#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo.T4\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Utilitario\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Negocio\" " #>\#>
+\<#<#= "@ output extension=\"Final.txt\" " #>\#>
+<#
+	if(entidades.Length > 0)
+    {
+        foreach (object entidadeNameBD in entidades)
+        {
+            if(entidadeNameBD != "")
+                #>\<#=<#= "NegocioGeradorTT.ControleAspxBd<" + entidadeNameBD + ">()" #>\#><#="\n"#><#
+        }
+    }
+#>
+<#@ output extension="Temp.tt" #>
+

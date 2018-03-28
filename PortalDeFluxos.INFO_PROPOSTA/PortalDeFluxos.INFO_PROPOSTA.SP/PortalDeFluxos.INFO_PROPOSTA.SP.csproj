@@ -1,0 +1,330 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D1582C6C-9F41-4263-9F26-65FF8047B783}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PortalDeFluxos.INFO_PROPOSTA.SP</RootNamespace>
+    <AssemblyName>PortalDeFluxos.INFO_PROPOSTA.SP</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetOfficeVersion>15.0</TargetOfficeVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{C1CDDADD-2546-481F-9697-4EA41081F2FC};{14822709-B5A1-4724-98CA-57A101D1B079};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SandboxedSolution>False</SandboxedSolution>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ImapX, Version=2.0.0.16, Culture=neutral, PublicKeyToken=5992873d65130d1f, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\ImapX.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\Microsoft.IdentityModel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\Microsoft.SharePoint.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\Microsoft.SharePoint.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client.Runtime, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client.WorkflowServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\Microsoft.SharePoint.Client.WorkflowServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\System.DirectoryServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\System.Runtime.Serialization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\System.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\System.Web.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="wnvhtmlconvert, Version=5.5.0.29430, Culture=neutral, PublicKeyToken=5b5f377bc08a4d32, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.SP.2.0.3\lib\net45\wnvhtmlconvert.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\BaseControls\CustomApproveForm.cs" />
+    <Compile Include="Core\BaseControls\CustomBasePage.cs" />
+    <Compile Include="Core\BaseControls\CustomForm.cs" />
+    <Compile Include="Core\BaseControls\CustomGridView.cs" />
+    <Compile Include="Core\BaseControls\CustomUserControl.cs" />
+    <Compile Include="Core\BaseControls\CustomWebPart.cs" />
+    <Compile Include="Core\BaseControls\ICustomForm.cs" />
+    <Compile Include="Core\Template\00-GeradoASPX.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>00-GeradoASPX.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\00-GeradorCS.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>00-GeradorCS.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\01-GeradorBdASPX.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorBdASPX.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\01-GeradorListaASPX.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorListaASPX.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\01-GeradorMetodosBdCS.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorMetodosBdCS.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\01-GeradorMetodosListaCS.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorMetodosListaCS.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\02-GeradorTemplateCS.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>02-GeradorTemplateCS.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\03-GeradorTemplateASPX.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>03-GeradorTemplateASPX.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\04-GeradorTabelaEventReceiver.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>04-GeradorTabelaEventReceiver.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Template\05-GeradorScriptForm.Temp.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>05-GeradorScriptForm.Temp.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Wrapper\ControleAnexo.cs" />
+    <Compile Include="Core\Wrapper\ControleAnoContratual.cs" />
+    <Compile Include="Core\Wrapper\ControleAprovacaoDelegacaoTarefa.cs" />
+    <Compile Include="Core\Wrapper\ControleBase.cs" />
+    <Compile Include="Core\Wrapper\ControleBuscarDadosComercial.cs" />
+    <Compile Include="Core\Wrapper\ControleCustomGrid.cs" />
+    <Compile Include="Core\Wrapper\ControleDocumento.cs" />
+    <Compile Include="Core\Wrapper\ControleEstruturaCdrGdr.cs" />
+    <Compile Include="Core\Wrapper\ControleEstruturaGtGrDiretor.cs" />
+    <Compile Include="Core\Wrapper\ControleEstruturaIndividual.cs" />
+    <Compile Include="Core\Wrapper\ControleMenuSuperior.cs" />
+    <Compile Include="Core\Wrapper\ControleRaizenForm.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Core\Template\00-ConfiguracaoTT.json" />
+    <None Include="Core\Template\00-GeradoASPX.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>00-GeradoASPX.tt</DependentUpon>
+      <LastGenOutput>00-GeradoASPX.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\00-GeradoASPX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>00-GeradoASPX.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\00-GeradorCS.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>00-GeradorCS.tt</DependentUpon>
+      <LastGenOutput>00-GeradorCS.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\00-GeradorCS.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>00-GeradorCS.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorBdASPX.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorBdASPX.tt</DependentUpon>
+      <LastGenOutput>01-GeradorBdASPX.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorBdASPX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>01-GeradorBdASPX.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorListaASPX.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorListaASPX.tt</DependentUpon>
+      <LastGenOutput>01-GeradorListaASPX.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorListaASPX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>01-GeradorListaASPX.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorMetodosBdCS.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorMetodosBdCS.tt</DependentUpon>
+      <LastGenOutput>01-GeradorMetodosBdCS.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorMetodosBdCS.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>01-GeradorMetodosBdCS.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorMetodosListaCS.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>01-GeradorMetodosListaCS.tt</DependentUpon>
+      <LastGenOutput>01-GeradorMetodosListaCS.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\01-GeradorMetodosListaCS.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>01-GeradorMetodosListaCS.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\02-GeradorTemplateCS.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>02-GeradorTemplateCS.tt</DependentUpon>
+      <LastGenOutput>02-GeradorTemplateCS.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\02-GeradorTemplateCS.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>02-GeradorTemplateCS.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\03-GeradorTemplateASPX.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>03-GeradorTemplateASPX.tt</DependentUpon>
+      <LastGenOutput>03-GeradorTemplateASPX.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\03-GeradorTemplateASPX.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>03-GeradorTemplateASPX.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\04-GeradorTabelaEventReceiver.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>04-GeradorTabelaEventReceiver.tt</DependentUpon>
+      <LastGenOutput>04-GeradorTabelaEventReceiver.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\04-GeradorTabelaEventReceiver.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>04-GeradorTabelaEventReceiver.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Core\Template\05-GeradorScriptForm.Temp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>05-GeradorScriptForm.tt</DependentUpon>
+      <LastGenOutput>05-GeradorScriptForm.Temp.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Template\05-GeradorScriptForm.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>05-GeradorScriptForm.Temp.tt</LastGenOutput>
+    </None>
+    <None Include="Features\EventReceiver\EventReceiver.feature">
+      <FeatureId>{cd748c02-bd8d-49c2-8bd9-f7d02421f161}</FeatureId>
+    </None>
+    <None Include="Features\Fluxo\Fluxo.feature">
+      <FeatureId>{5e691fb2-b928-4c76-889c-9ea3c7e7818a}</FeatureId>
+    </None>
+    <None Include="key.snk" />
+    <None Include="Package\Package.package">
+      <PackageId>{4eeea175-8949-4167-a8be-0fb32c785aab}</PackageId>
+    </None>
+    <None Include="Package\Package.Template.xml">
+      <DependentUpon>Package.package</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fluxo\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Core\Template\ControleAprovacao\ucAprovacaoDelegacaoTarefa.ascx.cs.txt" />
+    <Content Include="Core\Template\ControleAprovacao\ucAprovacaoDelegacaoTarefa.ascx.txt" />
+    <Content Include="Features\EventReceiver\EventReceiver.Template.xml">
+      <DependentUpon>EventReceiver.feature</DependentUpon>
+    </Content>
+    <Content Include="Features\Fluxo\Fluxo.Template.xml">
+      <DependentUpon>Fluxo.feature</DependentUpon>
+    </Content>
+    <Content Include="raizen-logotipo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PortalDeFluxos.INFO_PROPOSTA.BLL\PortalDeFluxos.INFO_PROPOSTA.BLL.csproj">
+      <Project>{6600cefc-c581-4019-a2b3-721040123c86}</Project>
+      <Name>PortalDeFluxos.INFO_PROPOSTA.BLL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\SharePointTools\Microsoft.VisualStudio.SharePoint.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

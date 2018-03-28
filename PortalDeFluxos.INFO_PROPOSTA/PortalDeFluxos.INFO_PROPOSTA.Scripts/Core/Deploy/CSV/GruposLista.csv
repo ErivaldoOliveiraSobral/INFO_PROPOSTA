@@ -1,0 +1,38 @@
+Nome;Roles
+Grupo Administradores TI Infra;Full Control,Editar Gridview Documentos
+Grupo Administradores TI Sistemas;Contribute,Cancelar Fluxo,Delegar Tarefa,Obter SAE,Excluir Anexo,Editar Gridview Documentos
+Grupo Administradores Portal;Raizen Colaborador,Cancelar Fluxo,Delegar Tarefa,Obter SAE,Excluir Anexo,Editar Gridview Documentos,Incluir Anexo
+Grupo Estrutura Comercial - GT;Raizen Colaborador,Raizen Estrutura Comercial,Incluir Anexo
+Grupo Estrutura Comercial - GR;Raizen Colaborador,Raizen Estrutura Comercial
+Grupo Estrutura Comercial - Diretor;Raizen Colaborador,Raizen Estrutura Comercial
+Grupo Estrutura Comercial - CDR;Raizen Colaborador,Raizen Estrutura Comercial,Incluir Anexo
+Grupo Estrutura Comercial - GDR;Raizen Colaborador,Raizen Estrutura Comercial
+Grupo Análise da Aprovação;Leitura,Delegar Tarefa,Incluir Anexo,Excluir Anexo,Editar Gridview Documentos
+Grupo Analista de Finanças;Leitura,Obter SAE,Incluir Anexo
+Grupo Analista de Planejamento;Leitura,Obter SAE,Incluir Anexo,Excluir Anexo
+Grupo Ativo;Leitura
+Grupo BIN;Leitura
+Grupo Cadastro;Leitura
+Grupo Comitê de Investimentos;Leitura,Obter SAE
+Grupo Contas a Receber;Leitura
+Grupo Contrato Emissão;Leitura,Delegar Tarefa,Incluir Anexo,Excluir Anexo,Editar Gridview Documentos
+Grupo Contrato Recebimento;Leitura,Delegar Tarefa,Incluir Anexo,Excluir Anexo,Editar Gridview Documentos
+Grupo Coordenador de Engenharia;Leitura
+Grupo Crédito;Leitura,Incluir Anexo
+Grupo Diretor de Finanças;Leitura
+Grupo Diretor de Planejamento de Rede;Leitura
+Grupo Engenharia;Leitura
+Grupo FOB;Leitura
+Grupo Gerente Crédito;Leitura,Incluir Anexo
+Grupo Gerente Finanças;Leitura,Obter SAE,Incluir Anexo
+Grupo Gerente de Análise de Investimentos;Leitura,Obter SAE,Incluir Anexo,Excluir Anexo
+Grupo Gerente de Planejamento;Leitura
+Grupo Gestão;Leitura
+Grupo Jurídico;Leitura,Incluir Anexo
+Grupo Planejamento;Leitura,Incluir Anexo
+Grupo Planner;Leitura,Obter SAE
+Grupo Preços;Leitura
+Grupo Programação;Leitura
+Grupo Rel Cliente;Leitura
+Grupo Sup Vendas;Leitura,Delegar Tarefa,Incluir Anexo,Excluir Anexo,Editar Gridview Documentos
+Grupo Validação Integridade;Leitura

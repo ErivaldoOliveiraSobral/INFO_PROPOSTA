@@ -1,0 +1,25 @@
+﻿{
+    "UrlSite": "http://pi",
+    "NomeControle": "ucFormularioTeste",
+    "Menus": [
+        {
+            "IdMenu": "menuProposta",
+            "NomeMenu": "Aba 1",
+            "Selecionado": true,
+            "IdPlaceHolder": ""
+        },
+        {
+            "IdMenu": "menuProposta2",
+            "NomeMenu": "Aba 2",
+            "Selecionado": false,
+            "IdPlaceHolder": ""
+        }
+    ],
+    "NomeLista": "FormularioTeste",
+    "EntidadeLista": "ListaSP_FormularioTeste",
+    "NaoObrigatoriosLista": [
+        "ComentariosMovimentacao",
+        "ClausulasAlteradas"
+    ],
+    "EntidadesBD": [ "ListaFormularioTeste","FormularioTesteAba2" ]
+}

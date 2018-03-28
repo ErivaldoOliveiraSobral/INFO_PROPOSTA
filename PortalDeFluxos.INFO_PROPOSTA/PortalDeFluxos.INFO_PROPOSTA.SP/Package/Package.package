@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" dslVersion="1.0.0.0" Id="4eeea175-8949-4167-a8be-0fb32c785aab" solutionId="4eeea175-8949-4167-a8be-0fb32c785aab" resetWebServer="false" sharePointProductVersion="15.0" name="PortalDeFluxos.INFO_PROPOSTA.SP" xmlns="http://schemas.microsoft.com/VisualStudio/2008/SharePointTools/PackageModel">
+  <assemblies>
+    <projectOutputAssembly location="PortalDeFluxos.INFO_PROPOSTA.BLL.dll" deploymentTarget="GlobalAssemblyCache" projectPath="..\PortalDeFluxos.INFO_PROPOSTA.BLL\PortalDeFluxos.INFO_PROPOSTA.BLL.csproj" />
+  </assemblies>
+  <features>
+    <featureReference itemId="cd748c02-bd8d-49c2-8bd9-f7d02421f161" />
+    <featureReference itemId="5e691fb2-b928-4c76-889c-9ea3c7e7818a" />
+  </features>
+</package>

@@ -1,0 +1,116 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#
+    var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+	var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+	var projectNameSP = "";
+	var dllPath = "";
+	var projectNameBll = "";
+	var jsonPath = "";
+	foreach (Project p in dte.Solution.Projects)
+	{
+		if(p.Name.Contains("BLL"))
+		{	
+			projectNameBll = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			dllPath = solutionDirectory + @"\bin\Debug\";
+		}
+		else if(p.Name.Contains("SP"))
+		{	
+			projectNameSP = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			jsonPath = solutionDirectory + @"\Core\Template\00-ConfiguracaoTT.json";
+		}
+	}
+
+	String json = System.IO.File.ReadAllText(jsonPath);
+	JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+	object jsonObj = serializer.Deserialize<object>(json);
+	String nomeControle = ((Dictionary<String, object>)jsonObj)["NomeControle"].ToString();
+    String entidadeName = ((Dictionary<String, object>)jsonObj)["EntidadeLista"].ToString();
+#>
+\<#<#= "@ template debug=\"false\" hostspecific=\"True\" language=\"C#\" " #>\#>
+\<#<#= "@ assembly name=\"System.Core\" " #>\#>
+\<#<#= "@ import namespace=\"System.Linq\" " #>\#>
+\<#<#= "@ import namespace=\"System.Text\" " #>\#>
+\<#<#= "@ import namespace=\"System.Collections.Generic\" " #>\#>
+\<#<#= "@ import namespace=\"System.IO\" " #>\#>
+\<#<#= "@ import namespace=\"System.Reflection\" " #>\#>
+\<#<#= "@ assembly name=\"EnvDTE\" " #>\#>
+\<#<#= "@ import namespace=\"EnvDTE\" " #>\#>
+<#
+	if(dllPath != "")
+    {
+        foreach (string dll in Directory.GetFiles(dllPath, "*.dll"))
+        {
+            if(dll != "")
+                #>\<#<#= "@ assembly name=\""+ dll +"\" "#>\#><#=""#><#
+        }
+#>\<#<#= "@ import namespace=\""+ projectNameBll +".Modelo\" "#>\#><#=""#><#
+    }
+#>
+\<#<#= "@ import namespace=\"Iteris\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo.T4\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Utilitario\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Negocio\" " #>\#>
+\<#<#= "@ output extension=\"Final.txt\" " #>\#>
+\<#<#= "ConfiguraoTT configuracao = NegocioGeradorTT.ObterConfiguracaoTT(@\"" + jsonPath + "\");"  #>\#>
+<#= @"
+<%@ Assembly Name=""$SharePoint.Project.AssemblyFullName$"" %>
+<%@ Assembly Name=""Microsoft.Web.CommandUI, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c"" %>
+<%@ Register TagPrefix=""SharePoint"" Namespace=""Microsoft.SharePoint.WebControls"" Assembly=""Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c"" %>
+<%@ Register TagPrefix=""Utilities"" Namespace=""Microsoft.SharePoint.Utilities"" Assembly=""Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c"" %>
+<%@ Register TagPrefix=""asp"" Namespace=""System.Web.UI"" Assembly=""System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"" %>
+<%@ Import Namespace=""Microsoft.SharePoint"" %>
+<%@ Register TagPrefix=""WebPartPages"" Namespace=""Microsoft.SharePoint.WebPartPages"" Assembly=""Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c"" %>
+<%@ Control Language=""C#"" AutoEventWireup=""true"" CodeBehind="""#>\<#=<#= "configuracao.NomeControle"#>\#><#= @".ascx.cs"" Inherits="""#><#=projectNameSP#><#= @".ControlTemplates."#><#=projectNameSP#><#= @"."#>\<#=<#= "configuracao.NomeControle" #>\#><#=@"""%>
+
+"#>\<#<#=
+@"foreach (var menuAtual in configuracao.Menus)
+{"
+#>\#><#=@"
+<div id="""#>\<#=<#="menuAtual.IdMenu" #>\#><#=@""" class=""tab-pane fade "#>\<#=<#= "menuAtual.Selecionado ? \"in active\": \"\" " #>\#><#=@""">
+	<asp:UpdatePanel runat=""server"" ChildrenAsTriggers=""true"" UpdateMode=""Conditional"" ID=""upp"#>\<#=<#="menuAtual.IdMenu" #>\#><#=@""">
+        <ContentTemplate>
+			"#>\<#=<#= "menuAtual.IdPlaceHolder == \"\" ? \"\" : \"<br />\"" #>\#><#=@"
+			"#>\<#=<#= "menuAtual.IdPlaceHolder == \"\" ? \"\" : \"<asp:PlaceHolder runat=\\\"server\\\" ID=\\\"\"+menuAtual.IdPlaceHolder+\"\\\"></asp:PlaceHolder>\"" #>\#><#=@"
+		</ContentTemplate>
+    </asp:UpdatePanel>
+</div>
+"#>\<#<#="}"#>\#><#=@"
+<div id=""menuAnexo"" class=""tab-pane fade"">
+	<div class=""form-group"">
+		<asp:PlaceHolder runat=""server"" ID=""phUcAnexos""></asp:PlaceHolder>
+	</div>
+</div>
+<div class=""row form-group form-group-button"">
+	<asp:UpdatePanel runat=""server"" UpdateMode=""Conditional"" ID=""uppFormularioBtn"">
+		<ContentTemplate>
+			<div class=""col-xs-6 col-sm-offset-0 col-md-offset-0"">
+				<asp:Button runat=""server"" ID=""btnAnexoPorEmail"" OnClick=""btnAnexoPorEmail_Click"" Text=""Anexo por E-mail"" CssClass=""btn btn-warning .btn-md"" formnovalidate=""formnovalidate"" />
+				<asp:Button runat=""server"" ID=""btnObterPDF"" OnClick=""btnObterPDF_Click"" Text=""Obter PDF"" CssClass=""btn btn-warning .btn-md"" formnovalidate=""formnovalidate"" />
+                
+			</div>
+			<div class=""col-xs-6"" style=""text-align: right;"">
+				<asp:Button runat=""server"" ID=""btnIniciar"" OnClick=""btnSalvarIniciar_Click"" OnClientClick=""return raizenForm.events.submitForm();"" Text=""Enviar para aprovação"" CssClass=""btn btn-primary .btn-md btnIniciarFluxo"" />
+				<asp:Button runat=""server"" ID=""btnSalvar"" OnClick=""btnSalvar_Click"" Text=""Salvar"" CssClass=""btn btn-primary .btn-md"" formnovalidate=""formnovalidate"" />
+				<asp:Button runat=""server"" ID=""btnCancelar"" OnClick=""btnCancelar_Click"" Text=""Sair"" CssClass=""btn btn-danger .btn-md"" formnovalidate=""formnovalidate"" />
+			</div>
+		</ContentTemplate>
+	</asp:UpdatePanel>
+</div>	
+"#>
+<#@ output extension="Temp.tt" #>

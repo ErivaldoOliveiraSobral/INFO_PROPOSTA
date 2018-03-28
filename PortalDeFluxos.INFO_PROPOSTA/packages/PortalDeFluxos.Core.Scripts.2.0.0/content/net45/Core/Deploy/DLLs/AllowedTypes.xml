@@ -1,0 +1,16 @@
+﻿<AllowedTypes>
+  <Assembly Name ="PortalDeFluxos.Core.ActivityLibrary">
+    <Namespace Name ="PortalDeFluxos.Core.ActivityLibrary">
+      <Type>TarefaCustom</Type>
+      <Type>AtualizarStatusFluxo</Type>
+      <Type>AtualizarEtapaParalela</Type>
+      <Type>EnviarEmail</Type>
+    </Namespace>
+  </Assembly>
+  <Assembly Name ="Raizen.PortalDeFluxos.ActivityLibrary">
+    <Namespace Name ="Raizen.PortalDeFluxos.ActivityLibrary">
+      <Type>AtribuirTarefaCustom</Type>
+      <Type>AtualizarStatusFluxo</Type>
+    </Namespace>
+  </Assembly>
+</AllowedTypes>

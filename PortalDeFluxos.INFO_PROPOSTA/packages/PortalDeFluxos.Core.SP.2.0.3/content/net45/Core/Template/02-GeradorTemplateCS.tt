@@ -1,0 +1,294 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#
+	    
+    var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+	var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+	var projectNameSP = "";
+	var dllPath = "";
+	var projectNameBll = "";
+	var jsonPath = "";
+
+	foreach (Project p in dte.Solution.Projects)
+	{
+		if(p.Name.Contains("BLL"))
+		{	
+			projectNameBll = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			dllPath = solutionDirectory + @"\bin\Debug\";
+		}
+		else if(p.Name.Contains("SP"))
+		{	
+			projectNameSP = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			jsonPath = solutionDirectory + @"\Core\Template\00-ConfiguracaoTT.json";
+		}
+	}
+
+	String json = System.IO.File.ReadAllText(jsonPath);
+	JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+	object jsonObj = serializer.Deserialize<object>(json);
+	String nomeControle = ((Dictionary<String, object>)jsonObj)["NomeControle"].ToString();
+    String entidadeName = ((Dictionary<String, object>)jsonObj)["EntidadeLista"].ToString();
+	
+#>
+\<#<#= "@ template debug=\"false\" hostspecific=\"True\" language=\"C#\" " #>\#>
+\<#<#= "@ assembly name=\"System.Core\" " #>\#>
+\<#<#= "@ import namespace=\"System.Linq\" " #>\#>
+\<#<#= "@ import namespace=\"System.Text\" " #>\#>
+\<#<#= "@ import namespace=\"System.Collections.Generic\" " #>\#>
+\<#<#= "@ import namespace=\"System.IO\" " #>\#>
+\<#<#= "@ import namespace=\"System.Reflection\" " #>\#>
+\<#<#= "@ assembly name=\"EnvDTE\" " #>\#>
+\<#<#= "@ import namespace=\"EnvDTE\" " #>\#>
+<#
+	if(dllPath != "")
+    {
+        foreach (string dll in Directory.GetFiles(dllPath, "*.dll"))
+        {
+            if(dll != "")
+                #>\<#<#= "@ assembly name=\""+ dll +"\" "#>\#><#=""#><#
+        }
+#>\<#<#= "@ import namespace=\""+ projectNameBll +".Modelo\" "#>\#><#=""#><#
+    }
+#>
+\<#<#= "@ import namespace=\"Iteris\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo.T4\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Utilitario\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Negocio\" " #>\#>
+\<#<#= "@ output extension=\"Final.txt\" " #>\#>
+\<#<#= "var objectName = \"_proposta\"+\""#><#=entidadeName#><#="\".ToObjectName();"  #>\#>
+<#= @"
+namespace "#><#=projectNameSP#><#=".ControlTemplates."#><#=projectNameSP#><#=@"
+{
+	public partial class "#><#=nomeControle#><#=@" : CustomForm, ICustomForm
+	{
+		
+		#region [propriedades]
+
+		private "#><#=entidadeName#><#=" _proposta"#><#=entidadeName#><#=@";
+		private Control controleIbm;
+        private Control controleEstruturaGt;
+        private Control controleEstruturaGr;
+        private Control controleEstruturaDiretor;
+        private Control controleEstruturaCdr;
+        private Control controleEstruturaGdr;
+
+		#endregion
+
+		#region [Evento]
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            throw new NotImplementedException(""Substituir com o código do Gerador 01-GeradorMetodosListaCS.tt"");  
+        }
+
+        protected override void CreateChildControls()
+        {
+            base.CreateChildControls();
+            LoadControls();
+        }
+
+        #region [Click]
+
+        protected void btnSalvar_Click(object sender, EventArgs e)
+        {
+			//Não modificar o evento
+			//Qualquer tratativa deve ser realizada dentro do método SalvarFormulario
+            Salvar(false);
+        }
+
+        protected void btnSalvarIniciar_Click(object sender, EventArgs e)
+        {
+			//Não modificar o evento
+			//Qualquer tratativa deve ser realizada dentro do método SalvarFormulario
+			Salvar(true);           
+        }
+
+        protected void btnCancelar_Click(object sender, EventArgs e)
+        {
+            Cancelar();
+        }
+
+        protected void btnAnexoPorEmail_Click(object sender, EventArgs e)
+        {
+            EnviarEmailAnexo();
+        }
+				
+		protected void btnObterPDF_Click(object sender, EventArgs e)
+        {
+            EventoTratado(DownloadPDF);
+        }
+		
+		protected void campo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+			//Toda lógica do envento customizada deve estar encapsulada em um método
+			//O método deve ser chamado utilizando o ""EventoTratado(metodo)""
+            EventoTratado(Evento_campo_SelectedIndexChanged);
+        }
+		
+
+        #endregion
+		
+        #endregion
+		
+		#region [Métodos - Auxiliares]
+		
+		#region [Métodos - Eventos Tratados]
+
+        public KeyValuePair<Boolean,String> SalvarFormulario(Boolean reiniciarFluxo)
+        {
+			KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+			
+			if (reiniciarFluxo && new ControleAnexo(controlAnexo).ObterQuantidadeAnexos() <= 0)
+				return new KeyValuePair<Boolean, String>(false, ""Fluxo não pode ser iniciado se não tiver anexos.""); 
+			
+			throw new NotImplementedException(""Atualizar o método com as chamadas salvar gerados no gerador 01-GeradorMetodosListaCS.tt ou 01-GeradorMetodosBdCS.tt""); 
+            //SalvarSP();
+			//SalvarBD();
+			
+            AcaoFluxo("#>\<#=<#="objectName"#>\#><#= @", reiniciarFluxo);
+
+			return retorno;
+        }
+		
+		public KeyValuePair<Boolean,String> DownloadPDF()
+        {
+			KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+			
+			Load"#><#=entidadeName#><#=@"();
+            if ("#>\<#=<#="objectName"#>\#><#= @" == null)
+                retorno = new KeyValuePair<Boolean, String>(false, String.Empty);
+            if (retorno.Key)
+            {
+                KeyValuePair<String, Microsoft.SharePoint.Client.FileInformation> pdf = NegocioPdf.Download("#>\<#=<#="objectName"#>\#><#= @".ObterNomeLista(), "#>\<#=<#="objectName"#>\#><#= @".ID);
+                retorno = new KeyValuePair<Boolean, String>(pdf.Value != null, String.Empty);
+                if (retorno.Key)
+                    FormHelper.Download(pdf.Key, pdf.Value);
+            }
+			
+            if (!retorno.Key)
+                retorno = new KeyValuePair<Boolean, String>(true, ""PDF não foi encontrado"");
+
+			return retorno;
+        }
+		
+		public KeyValuePair<Boolean,String> Evento_campo_SelectedIndexChanged()
+		{
+			KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, ""Método Exemplo"");
+
+			return retorno;
+		}
+
+		#endregion
+		
+		#region [Métodos - Load]
+
+        public void LoadPermissao()
+        {
+			Boolean fluxoAtivo = this.FluxoAtivo;
+            Boolean permissaoEditar = this.PermissaoEditar;
+            Boolean fluxoFinalizado = this.FluxoFinalizado;
+
+            BtnVisible = !fluxoFinalizado && (!fluxoAtivo && permissaoEditar);
+			
+            btnIniciar.Visible = BtnVisible;
+            btnSalvar.Visible = BtnVisible;
+            btnObterPDF.Visible = fluxoFinalizado || (fluxoAtivo && permissaoEditar);
+            btnAnexoPorEmail.Visible = this.CodigoItem > 0;
+			
+			if (btnObterPDF.Visible)
+            {
+                Load"#><#=entidadeName#><#=@"();
+                KeyValuePair<String, Microsoft.SharePoint.Client.FileInformation> pdf = NegocioPdf.Download("#>\<#=<#="objectName"#>\#><#= @".ObterNomeLista(), "#>\<#=<#="objectName"#>\#><#= @".ID);
+                if(pdf.Value != null)
+                {
+                    ScriptManager scriptMan = ScriptManager.GetCurrent(this.Page);
+                    btnObterPDF.OnClientClick = ""window.setTimeout(function() { _spFormOnSubmitCalled = false; }, 10);"";
+                    scriptMan.RegisterPostBackControl(btnObterPDF);
+                }
+            }
+			
+			if (!this.IsPostBack)
+				DisableAllControls(this, BtnVisible);
+        }
+
+        public void LoadForm()
+        {
+			//Chamar os métodos de load das entidades        
+			throw new NotImplementedException(""Atualizar o método com as chamadas load  gerados no gerador 01-GeradorMetodosListaCS.tt ou 01-GeradorMetodosBdCS.tt""); 
+
+            //LoadControlesSP();
+            //LoadControlesBD();
+            //LoadDadosSP();
+            //LoadDadosBD();
+        }
+
+        public void LoadControls()
+        {
+            throw new NotImplementedException(""Substituir com o código do Gerador 01-GeradorMetodosListaCS.tt""); 
+        }
+		
+		#endregion
+
+        #endregion
+
+		#region [Controles - Core]
+
+		#region [User Control Estrutura Comercial - Interface]
+
+		public void CarregarDadosComercial(Control control, String dadosComercial)
+		{
+			 throw new NotImplementedException(""Substituir com o código do Gerador 01-GeradorMetodosListaCS.tt"");   
+		}
+
+		public void MudarZoneamentoPadrao(Control control, Boolean habilitado)
+		{
+			 throw new NotImplementedException(""Substituir com o código do Gerador 01-GeradorMetodosListaCS.tt"");   
+		}
+
+		#endregion
+
+		#region [User Control Menu- Interface]
+
+		public List<KeyValuePair<String, String>> ObterConfiguracaoMenu()
+		{
+			return _listaConfiguracaoMenu;
+		}
+
+		public String ObterMenuAtivo()
+		{
+			return _idMenuAtivo;
+		}
+
+		public Boolean ExibirMenuTarefa()
+		{
+			return _exibirMenuTarefa;
+		}
+		
+		public String ObterTituloFormulario()
+		{
+			return TituloFormulario;
+		}
+		
+		#endregion
+	
+		#endregion
+
+	}
+}
+"#>
+<#@ output extension="Temp.tt" #>

@@ -1,0 +1,406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6600CEFC-C581-4019-A2B3-721040123C86}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PortalDeFluxos.INFO_PROPOSTA.BLL</RootNamespace>
+    <AssemblyName>PortalDeFluxos.INFO_PROPOSTA.BLL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ImapX, Version=2.0.0.16, Culture=neutral, PublicKeyToken=5992873d65130d1f, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\ImapX.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\Microsoft.IdentityModel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\Microsoft.SharePoint.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\Microsoft.SharePoint.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client.Runtime, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client.WorkflowServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\Microsoft.SharePoint.Client.WorkflowServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\System.DirectoryServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\System.Runtime.Serialization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\System.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\System.Web.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="wnvhtmlconvert, Version=5.5.0.29430, Culture=neutral, PublicKeyToken=5b5f377bc08a4d32, processorArchitecture=MSIL">
+      <HintPath>..\packages\PortalDeFluxos.Core.BLL.2.0.6\lib\net45\wnvhtmlconvert.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Atributos\InternalNameAttribute.cs" />
+    <Compile Include="Core\Dados\Base\BaseDB.cs" />
+    <Compile Include="Core\Dados\Base\BaseSP.cs" />
+    <Compile Include="Core\Dados\Base\ComumDB.cs" />
+    <Compile Include="Core\Dados\Base\ComumSP.cs" />
+    <Compile Include="Core\Dados\Base\ContextoTransacional.cs" />
+    <Compile Include="Core\Dados\DadosDocumento.cs" />
+    <Compile Include="Core\Dados\DadosInstanciaFluxo.cs" />
+    <Compile Include="Core\Dados\DadosLog.cs" />
+    <Compile Include="Core\Dados\DadosPainel.cs" />
+    <Compile Include="Core\Dados\DadosRelatorio.cs" />
+    <Compile Include="Core\Dados\DadosRezoneamento.cs" />
+    <Compile Include="Core\Dados\DadosServicoAgendado.cs" />
+    <Compile Include="Core\Dados\DadosTarefa.cs" />
+    <Compile Include="Core\Dados\DadosUsuariosGrupos.cs" />
+    <Compile Include="Core\Iteris\Attributes.cs" />
+    <Compile Include="Core\Iteris\CollectionExtensions.cs" />
+    <Compile Include="Core\Iteris\Collections\Generic\WritableKeyValuePair.cs" />
+    <Compile Include="Core\Iteris\Collections\Specialized\IdentityObjectCollection.cs" />
+    <Compile Include="Core\Iteris\Collections\Specialized\NameByteArrayCollection.cs" />
+    <Compile Include="Core\Iteris\Collections\Specialized\NameObjectCollection.cs" />
+    <Compile Include="Core\Iteris\Collections\Specialized\NameValueCollection.cs" />
+    <Compile Include="Core\Iteris\CultureLCID.cs" />
+    <Compile Include="Core\Iteris\Data\OrderByCollection.cs" />
+    <Compile Include="Core\Iteris\Data\OrderByDirection.cs" />
+    <Compile Include="Core\Iteris\DictionaryExtensions.cs" />
+    <Compile Include="Core\Iteris\KeyValuePairExtensions.cs" />
+    <Compile Include="Core\Iteris\LambdaEqualityComparer.cs" />
+    <Compile Include="Core\Iteris\LocalizableString.cs" />
+    <Compile Include="Core\Iteris\ObjectExtensions.cs" />
+    <Compile Include="Core\Iteris\SharePoint\Design\InternalListDefinitions.cs" />
+    <Compile Include="Core\Iteris\SharePoint\Design\SPCamlComparison.cs" />
+    <Compile Include="Core\Iteris\SharePoint\Design\SPCamlCondition.cs" />
+    <Compile Include="Core\Iteris\SharePoint\Design\SPCamlLogical.cs" />
+    <Compile Include="Core\Iteris\SharePoint\QueryParser.cs" />
+    <Compile Include="Core\Iteris\SharePoint\SPCamlBuilder.cs" />
+    <Compile Include="Core\Iteris\StringExtensions.cs" />
+    <Compile Include="Core\Iteris\Utilities\ADUtility.cs" />
+    <Compile Include="Core\Modelo\A3F\DadosA3F.cs" />
+    <Compile Include="Core\Modelo\Anexo.cs" />
+    <Compile Include="Core\Modelo\AnexoFacil.cs" />
+    <Compile Include="Core\Modelo\AnexoFacilAPI\AnexoFacilAPI.cs" />
+    <Compile Include="Core\Modelo\AnexoFacilIntegracao.cs" />
+    <Compile Include="Core\Modelo\AnexoFacilPartial.cs" />
+    <Compile Include="Core\Modelo\AnoContratual.cs" />
+    <Compile Include="Core\Modelo\Base\BasePainel.cs" />
+    <Compile Include="Core\Modelo\Base\Entidade.cs" />
+    <Compile Include="Core\Modelo\Base\EntidadeDB.cs" />
+    <Compile Include="Core\Modelo\Base\EntidadeHeadLineSP.cs" />
+    <Compile Include="Core\Modelo\Base\EntidadePropostaSP.cs" />
+    <Compile Include="Core\Modelo\Base\EntidadeSP.cs" />
+    <Compile Include="Core\Modelo\Base\IEntidadeDBCore.cs" />
+    <Compile Include="Core\Modelo\Base\IPortalServico.cs" />
+    <Compile Include="Core\Modelo\Campo.cs" />
+    <Compile Include="Core\Modelo\CEGR.cs" />
+    <Compile Include="Core\Modelo\CEGR_Cidade.cs" />
+    <Compile Include="Core\Modelo\Cidade.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoEmailAttachment.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoEmailMensagem.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoExpediente.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoImap.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoPortal.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoRestartFluxos.cs" />
+    <Compile Include="Core\Modelo\ConfiguracaoSincronizacaoLista.cs" />
+    <Compile Include="Core\Modelo\Conta.cs" />
+    <Compile Include="Core\Modelo\CustomGrid.cs" />
+    <Compile Include="Core\Modelo\CustomRequestReport.cs" />
+    <Compile Include="Core\Modelo\DadosComercial.cs" />
+    <Compile Include="Core\Modelo\DadosComercialSalesForce.cs" />
+    <Compile Include="Core\Modelo\Delegacao.cs" />
+    <Compile Include="Core\Modelo\Documento.cs" />
+    <Compile Include="Core\Modelo\EmailAttachment.cs" />
+    <Compile Include="Core\Modelo\Estado.cs" />
+    <Compile Include="Core\Modelo\EstruturaComercial.cs" />
+    <Compile Include="Core\Modelo\EstruturaComercial_Modificada.cs" />
+    <Compile Include="Core\Modelo\EstruturaComercial_Salesforce.cs" />
+    <Compile Include="Core\Modelo\ExcelSheet.cs" />
+    <Compile Include="Core\Modelo\FichaCadastral\EnderecoFCCD.cs" />
+    <Compile Include="Core\Modelo\FichaCadastral\ExigenciaFichaCadastralFCCD.cs" />
+    <Compile Include="Core\Modelo\FichaCadastral\FichaCadastralFCCD.cs" />
+    <Compile Include="Core\Modelo\FichaCadastral\ProdutoFichaCadastralFCCD.cs" />
+    <Compile Include="Core\Modelo\FichaCadastral\RestricaoFichaCadastralFCCD.cs" />
+    <Compile Include="Core\Modelo\Grupo.cs" />
+    <Compile Include="Core\Modelo\GrupoSP.cs" />
+    <Compile Include="Core\Modelo\GrupoUsuariosSP.cs" />
+    <Compile Include="Core\Modelo\HorarioVerao.cs" />
+    <Compile Include="Core\Modelo\InstanciaFluxo.cs" />
+    <Compile Include="Core\Modelo\InstanciaFluxoExtensao.cs" />
+    <Compile Include="Core\Modelo\Lembrete.cs" />
+    <Compile Include="Core\Modelo\Lista.cs" />
+    <Compile Include="Core\Modelo\ListaHist.cs" />
+    <Compile Include="Core\Modelo\Log.cs" />
+    <Compile Include="Core\Modelo\LogExtensao.cs" />
+    <Compile Include="Core\Modelo\LogIntegracao.cs" />
+    <Compile Include="Core\Modelo\MensagemEmail.cs" />
+    <Compile Include="Core\Modelo\MensagemEmailAnexo.cs" />
+    <Compile Include="Core\Modelo\MinhaTarefaPendente.cs" />
+    <Compile Include="Core\Modelo\Parametro.cs" />
+    <Compile Include="Core\Modelo\PortalDeFluxo.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PortalDeFluxo.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Modelo\PortalDeFluxo.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PortalDeFluxo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Modelo\PortalDeFluxo.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PortalDeFluxo.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Modelo\PortalDeFluxoPartial.cs" />
+    <Compile Include="Core\Modelo\PropostaDocumento.cs" />
+    <Compile Include="Core\Modelo\RelatorioOperacionalTarefa.cs" />
+    <Compile Include="Core\Modelo\SAEParametros.cs" />
+    <Compile Include="Core\Modelo\SAEParametrosExtensao.cs" />
+    <Compile Include="Core\Modelo\SAE\CasoBaseSAE.cs" />
+    <Compile Include="Core\Modelo\SAE\CasoInvestimentoSAE.cs" />
+    <Compile Include="Core\Modelo\SAE\ClienteSAE.cs" />
+    <Compile Include="Core\Modelo\SAE\FluxoCaixaIncrementalSAE.cs" />
+    <Compile Include="Core\Modelo\SAE\ResultadoEconomicoSAE.cs" />
+    <Compile Include="Core\Modelo\SAE_B2B\CasoBaseSAEB2B.cs" />
+    <Compile Include="Core\Modelo\SAE_B2B\CasoInvestimentoSAEB2B.cs" />
+    <Compile Include="Core\Modelo\SAE_B2B\ClienteSAEB2B.cs" />
+    <Compile Include="Core\Modelo\SAE_B2B\FluxoCaixaIncrementalSAEB2B.cs" />
+    <Compile Include="Core\Modelo\SAE_B2B\ResultadoEconomicoSAEB2B.cs" />
+    <Compile Include="Core\Modelo\Salesforce\AtivosSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\CasoBaseSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\CasoInvestimentoSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\ComentariosSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\ContratosSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\ConvenienciaSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\InformacoesIBMSalesForce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\InformacoesSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\MeioAmbienteSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\ParecerCreditoSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\PropostaInvestimentoRetornoSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\PropostaInvestimentoSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\PropostaInvestimentoVarejoSalesforce.cs" />
+    <Compile Include="Core\Modelo\Salesforce\ResultadosEconomicosSalesforce.cs" />
+    <Compile Include="Core\Modelo\ServicoAgendado.cs" />
+    <Compile Include="Core\Modelo\ServicoAgendadoExtensao.cs" />
+    <Compile Include="Core\Modelo\Solicitacao.cs" />
+    <Compile Include="Core\Modelo\SP\GeradorModeloSP.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeradorModeloSP.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Modelo\SP\GeradorModeloSPUtilitarios.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeradorModeloSPUtilitarios.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Core\Modelo\TabelaExemplo.cs" />
+    <Compile Include="Core\Modelo\Tarefa.cs" />
+    <Compile Include="Core\Modelo\TarefaExtensao.cs" />
+    <Compile Include="Core\Modelo\TarefaHist.cs" />
+    <Compile Include="Core\Modelo\TarefaPartial.cs" />
+    <Compile Include="Core\Modelo\TarefasPendentes.cs" />
+    <Compile Include="Core\Modelo\TarefasRealizadas.cs" />
+    <Compile Include="Core\Modelo\TemplateProxy.cs" />
+    <Compile Include="Core\Modelo\TesteLookup.cs" />
+    <Compile Include="Core\Modelo\TipoProposta.cs" />
+    <Compile Include="Core\Modelo\TipoPropostaDocumento.cs" />
+    <Compile Include="Core\Modelo\TT\ConfiguraoModeloLista.cs" />
+    <Compile Include="Core\Modelo\TT\ConfiguraoTT.cs" />
+    <Compile Include="Core\Modelo\Usuario.cs" />
+    <Compile Include="Core\Modelo\UsuariosGruposSPExtensao.cs" />
+    <Compile Include="Core\Modelo\UsuarioSP.cs" />
+    <Compile Include="Core\Modelo\UsuarioTeste.cs" />
+    <Compile Include="Core\Modelo\WFGestaoFluxo_Fluxo.cs" />
+    <Compile Include="Core\Modelo\WFGestaoFluxo_Tarefa.cs" />
+    <Compile Include="Core\Negocio\NegocioAnexoFacil.cs" />
+    <Compile Include="Core\Negocio\NegocioAnoContratual.cs" />
+    <Compile Include="Core\Negocio\NegocioComum.cs" />
+    <Compile Include="Core\Negocio\NegocioComumSAE.cs" />
+    <Compile Include="Core\Negocio\NegocioCustomGrid.cs" />
+    <Compile Include="Core\Negocio\NegocioDocumento.cs" />
+    <Compile Include="Core\Negocio\NegocioEmail.cs" />
+    <Compile Include="Core\Negocio\NegocioExemplo.cs" />
+    <Compile Include="Core\Negocio\NegocioGeradorTT.cs" />
+    <Compile Include="Core\Negocio\NegocioInstanciaFluxo.cs" />
+    <Compile Include="Core\Negocio\NegocioLog.cs" />
+    <Compile Include="Core\Negocio\NegocioPainel.cs" />
+    <Compile Include="Core\Negocio\NegocioPdf.cs" />
+    <Compile Include="Core\Negocio\NegocioProposta.cs" />
+    <Compile Include="Core\Negocio\NegocioRelatorio.cs" />
+    <Compile Include="Core\Negocio\NegocioRezoneamento.cs" />
+    <Compile Include="Core\Negocio\NegocioServicoAgendado.cs" />
+    <Compile Include="Core\Negocio\NegocioServicos.cs" />
+    <Compile Include="Core\Negocio\NegocioSincronizacao.cs" />
+    <Compile Include="Core\Negocio\NegocioTarefaCustom.cs" />
+    <Compile Include="Core\Negocio\NegocioTradutorTags.cs" />
+    <Compile Include="Core\Negocio\NegocioUsuariosGrupos.cs" />
+    <Compile Include="Core\Portal.cs" />
+    <Compile Include="Core\Utilitario\Constantes.cs" />
+    <Compile Include="Core\Utilitario\Enumeradores.cs" />
+    <Compile Include="Core\Utilitario\FormHelper.cs" />
+    <Compile Include="Core\Utilitario\Helper.cs" />
+    <Compile Include="Core\Utilitario\Reflexao.cs" />
+    <Compile Include="Core\Utilitario\Seguranca.cs" />
+    <Compile Include="Core\Utilitario\Serializacao.cs" />
+    <Compile Include="Core\Utilitario\TransacaoUpdateSP.cs" />
+    <Compile Include="Modelo\BancoDados.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BancoDados.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Modelo\BancoDados.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BancoDados.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Modelo\BancoDados.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BancoDados.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Modelo\SP\GeradorModeloSP.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeradorModeloSP.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Modelo\SP\GeradorModeloSPUtilitarios.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeradorModeloSPUtilitarios.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <EntityDeploy Include="Core\Modelo\PortalDeFluxo.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PortalDeFluxo.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Core\Modelo\PortalDeFluxo.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PortalDeFluxo.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Modelo\PortalDeFluxo.edmx.diagram" />
+    <None Include="Core\Modelo\PortalDeFluxo.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PortalDeFluxo.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Modelo\SP\ConfiguracaoModeloListaTT.json" />
+    <None Include="Core\Modelo\SP\GeradorModeloSP.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GeradorModeloSP.cs</LastGenOutput>
+    </None>
+    <None Include="Core\Modelo\SP\GeradorModeloSPUtilitarios.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GeradorModeloSPUtilitarios.cs</LastGenOutput>
+    </None>
+    <None Include="Key.snk" />
+    <EntityDeploy Include="Modelo\BancoDados.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>BancoDados.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Modelo\BancoDados.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BancoDados.Context.cs</LastGenOutput>
+    </None>
+    <None Include="Modelo\BancoDados.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BancoDados.cs</LastGenOutput>
+    </None>
+    <None Include="Modelo\SP\ConfiguracaoModeloListaTT.json" />
+    <None Include="Modelo\SP\GeradorModeloSP.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GeradorModeloSP.cs</LastGenOutput>
+    </None>
+    <None Include="Modelo\SP\GeradorModeloSPUtilitarios.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GeradorModeloSPUtilitarios.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Negocio\" />
+    <Folder Include="Utilitario\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="raizen-logotipo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

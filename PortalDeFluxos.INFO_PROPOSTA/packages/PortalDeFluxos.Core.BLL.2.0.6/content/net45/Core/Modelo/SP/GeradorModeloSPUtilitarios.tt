@@ -1,0 +1,263 @@
+﻿<#@ assembly name="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ assembly name="Microsoft.SharePoint.Client" #>
+<#@ assembly name="Microsoft.SharePoint.Client.Runtime" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ Import Namespace="System.Collections.Specialized" #>
+<#@ Import Namespace="System.Web.Script.Serialization" #>
+<#@ Import Namespace="System.Text.RegularExpressions" #>
+<#@ Import Namespace="System.Globalization" #>
+<#@ Import Namespace="Microsoft.SharePoint.Client" #>
+<#+
+    static String[] CamposListaAIgnorar = new String[] {
+        "ID",
+        "Title",
+        "Created",
+        "Author",
+        "Modified",
+        "Editor"
+    };
+
+    static String[] CamposListaPropostaAIgnorar = new String[] {
+        "Title",
+        "RazaoSocial",
+        "IBM",
+        "SiteCode",
+        "Etapa",
+        "EtapaReprovada",
+        "TarefasConcluidas",
+        "EstadoAtualFluxo",
+        "BuscaDocumentos",
+        "ContratoPadrao",
+        "UtilizaZoneamentoPadrao",
+        "GerenteTerritorio",
+        "GerenteRegiao",
+        "DiretorVendas",
+        "CDR",
+        "GDR",
+        "UtilizaZoneamentoGT",
+        "UtilizaZoneamentoGR",
+        "UtilizaZoneamentoDiretor",
+        "UtilizaZoneamentoCdr",
+        "UtilizaZoneamentoGdr"
+    };
+
+    public static String ToObjectName(String value) {
+		String retorno = "";
+		value = ToNormalizedString(Regex.Replace(value, @"[^\w\s]*", "")).Replace("-", String.Empty);
+        string[] words = value.Split(' ');
+        foreach (String word in words)
+		{
+			String wordTratado = word.Replace(" ", String.Empty);
+			if(wordTratado != String.Empty)
+				if(wordTratado.Length > 1)
+					retorno+= wordTratado.First().ToString().ToUpper() + wordTratado.Substring(1);
+				else
+					retorno+= wordTratado.First().ToString().ToUpper();
+		}
+			
+		return retorno;
+    }
+
+    public static String ToNormalizedString(String value) {
+        StringBuilder normalizedTitle = null;
+
+        if (value == null)
+            return null;
+
+        normalizedTitle = new StringBuilder();
+
+        foreach (Char character in value.Normalize(NormalizationForm.FormD))
+            if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
+                normalizedTitle.Append(character);
+
+        return normalizedTitle.ToString();
+    }
+
+    public class ConfiguraoModeloLista
+    {
+        public String UrlSite { get; set; }
+
+        public List<ModeloListaSP> ModelosListaSP { get; set; }
+    }
+
+    public class ModeloListaSP
+    {
+        /// <summary>
+        /// Display name da lista  automatico
+        /// </summary>
+        public String NomeLista { get; set; }
+
+        public Boolean ListaProposta { get; set; }
+
+        /// <summary>
+        /// Campos que não reinicia o fluxo automaticamente
+        /// </summary>
+        public List<String> NaoReiniciar { get; set; }
+    }
+
+    public static ConfiguraoModeloLista ObterConfiguracaoListaSP(String configuracaoPath)
+    {
+        String json = System.IO.File.ReadAllText(configuracaoPath);
+        JavaScriptSerializer serializer = null;
+
+        if (String.IsNullOrEmpty(json))
+            return new ConfiguraoModeloLista();
+
+        serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+        return serializer.Deserialize<ConfiguraoModeloLista>(json);
+    }
+
+    public static string GenerateClassName(string value)
+    {
+        return "ListaSP_" + ToObjectName(value);
+    }
+
+    private static String ObterTipo(ClientContext spClient, Field field)
+    {
+        String typeName = String.Empty;
+
+        if (field is FieldText || field is FieldMultiLineText || field is FieldChoice)
+            typeName = "String";
+        else if (field is FieldMultiChoice)
+            typeName = "String[]";
+        else if (field is FieldUser)
+        {
+            if (((FieldUser)field).SelectionMode == FieldUserSelectionMode.PeopleAndGroups)
+            {
+                if (((FieldUser)field).AllowMultipleValues)
+                    typeName = "List<Grupo>";
+                else
+                    typeName = "Grupo";
+            }
+            else
+            {
+                if (((FieldUser)field).AllowMultipleValues)
+                    typeName = "List<Usuario>";
+                else
+                    typeName = "Usuario";
+            }
+        }
+        else if (field is FieldLookup)
+        {
+            String sGuidLista = field.SchemaXml.Substring(field.SchemaXml.IndexOf("\"{") + 2, field.SchemaXml.IndexOf("}\"") - field.SchemaXml.IndexOf("\"{") - 2);
+            Guid guidLista;
+            if (Guid.TryParse(sGuidLista, out guidLista))
+            {
+                List listaLookup = spClient.Web.Lists.GetById(guidLista);
+                spClient.Load(listaLookup);
+                spClient.ExecuteQuery();
+
+                if (listaLookup != null)
+                {
+                    if (((FieldLookup)field).AllowMultipleValues)
+                        typeName = "List<" + GenerateClassName(listaLookup.Title) + ">";
+                    else
+                        typeName = GenerateClassName(listaLookup.Title);
+                }
+                else
+                    typeName = guidLista.ToString();
+            }
+        }
+        else
+        {
+            if (field is FieldNumber)
+            {
+                if (field.SchemaXml.IndexOf("Decimals=\"0\"") > 0)
+                    typeName = "Int32";
+                else
+                    typeName = "Decimal";
+            }
+            else if (field is FieldDateTime)
+                typeName = "DateTime";
+            else if (field.SchemaXml.IndexOf("Type=\"Boolean\"") > 0)
+                typeName = "Boolean";
+
+            typeName = typeName != String.Empty ? typeName + (field.Required ? "" : "?") : String.Empty;
+        }
+        return typeName;
+    }
+
+	private static String ObterScale(ClientContext spClient, Field field)
+    {
+        String scale = String.Empty;
+
+        if (field is FieldNumber)
+        {
+			if (field.SchemaXml.IndexOf("Decimals=\"5\"") > 0)
+				scale = "5";
+			else if (field.SchemaXml.IndexOf("Decimals=\"4\"") > 0)
+				scale = "4";
+			else if (field.SchemaXml.IndexOf("Decimals=\"3\"") > 0)
+				scale = "3";
+			else if (field.SchemaXml.IndexOf("Decimals=\"2\"") > 0)
+				scale = "2";
+            else if (field.SchemaXml.IndexOf("Decimals=\"1\"") > 0)
+                scale = "1";  
+			else if(field.SchemaXml.IndexOf("Decimals") == -1)
+				scale ="5";
+   
+        }           
+        return scale;
+    }
+
+    private static String ObterConfiguracaoCampo(ClientContext spClient, Field field, Boolean listaProposta, List<String> excecaoReinicioAutomatico)
+    {
+        StringBuilder attributo = new StringBuilder();
+        String atributoFormat = "[InternalName(\"{0}\"{1})]";
+        String construtorFormat = "public {0} {1} {{ get; set; }}";
+		String scaleFormat = "[Scale({0})]";
+
+        attributo.Append("\t\t");
+        attributo.Append(String.Format(atributoFormat, field.InternalName
+            , !listaProposta ?
+                "" : excecaoReinicioAutomatico.Contains(field.InternalName) ?
+                        "" : ",FieldType.ReiniciarWF"));
+        attributo.Append(Environment.NewLine);
+        attributo.Append("\t\t");
+		String tipo = ObterTipo(spClient, field);
+		String scale = ObterScale(spClient, field);
+		if(scale != String.Empty){
+			attributo.Append(String.Format(scaleFormat, scale));
+			attributo.Append(Environment.NewLine);
+			attributo.Append("\t\t");
+		}			
+        attributo.Append(String.Format(construtorFormat, tipo, ToObjectName(field.Title).Trim()));
+        attributo.Append(Environment.NewLine);
+        return tipo != String.Empty ? attributo.ToString() : String.Empty;
+    }
+
+    public static String ObterCamposModelo(String urlSite, ModeloListaSP configuracaoTT)
+    {
+        StringBuilder camposModelo = new StringBuilder();
+        ClientContext spClient = new ClientContext(urlSite);
+        List lista = spClient.Web.Lists.GetByTitle(configuracaoTT.NomeLista);
+        spClient.Load(lista);
+        spClient.ExecuteQuery();
+        spClient.Load(lista.Fields);
+        spClient.ExecuteQuery();
+        List<Field> camposProcessar = lista.Fields.ToList().Where(i =>
+            i.Title.Equals("Chave") ||
+            !CamposListaAIgnorar.Contains(i.InternalName) &&
+            (!configuracaoTT.ListaProposta || !CamposListaPropostaAIgnorar.Contains(i.InternalName)) &&
+            !i.Hidden &&
+            i.CanBeDeleted
+        ).ToList<Field>();
+        foreach (Field field in camposProcessar)
+        {
+            String campo = ObterConfiguracaoCampo(spClient, field, configuracaoTT.ListaProposta, configuracaoTT.NaoReiniciar);
+            if (campo != String.Empty)
+            {
+                camposModelo.Append(campo);
+                camposModelo.Append(Environment.NewLine);
+            }
+        }
+        return camposModelo.ToString();
+    }
+
+#>

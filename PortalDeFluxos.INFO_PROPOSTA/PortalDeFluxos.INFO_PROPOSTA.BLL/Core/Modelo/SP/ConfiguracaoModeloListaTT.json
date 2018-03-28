@@ -1,0 +1,80 @@
+﻿{
+    "UrlSite": "http://pi",
+    "ModelosListaSP": [
+        {
+            "NomeLista": "Cadastro de Grupos",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raizen UserControl",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Feriados",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Fluxos",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raízen - Aprovadores",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raízen - Configurações de Fluxo",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raízen - Lembretes",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raízen - Template de E-mails",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raízen - Aprovações Headline Size",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Headline Size - Financeiro",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Headline Size - Planejamento",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Headline Size - Vendas",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Raizen Configurações",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "Aprovação E-mail",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "TemplateForm",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        }
+    ]
+}

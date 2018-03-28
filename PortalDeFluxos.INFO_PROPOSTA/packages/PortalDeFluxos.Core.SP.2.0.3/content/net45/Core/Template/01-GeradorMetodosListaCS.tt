@@ -1,0 +1,279 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#
+	var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+	var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+	var dllPath = "";
+	var jsonPath = "";
+	var projectNameBll = "";
+
+	foreach (Project p in dte.Solution.Projects)
+	{
+		if(p.Name.Contains("BLL"))
+		{	
+			projectNameBll = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			dllPath = solutionDirectory + @"\bin\Debug\";
+		}
+		else if(p.Name.Contains("SP"))
+		{	
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			jsonPath = solutionDirectory + @"\Core\Template\00-ConfiguracaoTT.json";
+		}
+	}
+	String json = System.IO.File.ReadAllText(jsonPath);
+	JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+	object jsonObj = serializer.Deserialize<object>(json);
+	String urlSite = ((Dictionary<String, object>)jsonObj)["UrlSite"].ToString();
+    String entidadeName = ((Dictionary<String, object>)jsonObj)["EntidadeLista"].ToString();
+	object[] entidades = (object[])((Dictionary<String, object>)jsonObj)["EntidadesBD"];
+	var objectName = "_proposta"+entidadeName;
+	#>
+\<#<#= "@ template debug=\"false\" hostspecific=\"True\" language=\"C#\" " #>\#>
+\<#<#= "@ assembly name=\"System.Core\" " #>\#>
+\<#<#= "@ import namespace=\"System.Linq\" " #>\#>
+\<#<#= "@ import namespace=\"System.Text\" " #>\#>
+\<#<#= "@ import namespace=\"System.Collections.Generic\" " #>\#>
+\<#<#= "@ import namespace=\"System.IO\" " #>\#>
+\<#<#= "@ import namespace=\"System.Reflection\" " #>\#>
+\<#<#= "@ assembly name=\"EnvDTE\" " #>\#>
+\<#<#= "@ import namespace=\"EnvDTE\" " #>\#>
+<#
+	if(dllPath != "")
+    {
+        foreach (string dll in Directory.GetFiles(dllPath, "*.dll"))
+        {
+            if(dll != "")
+                #>\<#<#= "@ assembly name=\""+ dll +"\" "#>\#><#=""#><#
+        }
+#>\<#<#= "@ import namespace=\""+ projectNameBll +".Modelo\" "#>\#><#=""#><#
+    }
+#>
+\<#<#= "@ import namespace=\"Iteris\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo.T4\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Utilitario\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Negocio\" " #>\#>
+\<#<#= "@ output extension=\"Final.txt\" " #>\#>
+\<#<#= "ConfiguraoTT configuracao = NegocioGeradorTT.ObterConfiguracaoTT(@\"" + jsonPath + "\");"  #>\#>
+\<#<#= "var menuSelecionado = configuracao.Menus.Where(m => m.Selecionado).FirstOrDefault();"  #>\#>
+
+<#= @"
+protected void LoadMenu()
+{
+	List<KeyValuePair<String,String>> listaMenus = new List<KeyValuePair<String,String>>(); 
+	"#>\<#<#= @"foreach (var menuAtual in configuracao.Menus)
+	{" #>\#><#= @"
+listaMenus.Add(new KeyValuePair<String, String>("""#>\<#=<#="menuAtual.IdMenu"#>\#><#="\",\"" #>\<#=<#="menuAtual.NomeMenu"#>\#><#= @"""));
+    "#>\<#<#="}"#>\#><#= @"
+listaMenus.Add(new KeyValuePair<String, String>(""menuAnexo"", ""Anexo""));
+	" #>\<#=<#= @"menuSelecionado == null ? """" : @""CarregarFormulario(listaMenus,"""""" + menuSelecionado.IdMenu + ""\"""" +
+	"",\"" Nome Formulário \"""" +
+	"", LoadForm"" +
+	"", LoadPermissao""+
+	"", SalvarFormulario);"""#>\#><#= @"
+}
+
+public void LoadControls()
+{
+	CarregarUcAnexos(phUcAnexos);
+    controleIbm = CarregarUcBuscarEstruturaComercial(phUcBuscarEstruturaComercial);
+    controleEstruturaGt = CarregarUcEstruturaIndividual(plhEstruturaGt);
+    controleEstruturaGr = CarregarUcEstruturaIndividual(plhEstruturaGr);
+    controleEstruturaDiretor = CarregarUcEstruturaIndividual(plhEstruturaDiretor);
+    controleEstruturaCdr = CarregarUcEstruturaIndividual(plhEstruturaCdr);
+    controleEstruturaGdr = CarregarUcEstruturaIndividual(plhEstruturaGdr);
+
+    if (!this.IsPostBack)
+    {
+        if ("+objectName+ @" != null)
+        {
+            CarregarDadosUcBuscarEstruturaComercial(controleIbm, "+objectName+ @".Ibm, true, !BtnVisible, String.Empty);
+            //CarregarDadosUcBuscarEstruturaComercial(controleSiteCode, "+objectName+ @".SiteCode, false, !BtnVisible, String.Empty);
+                
+			CarregarDadosUcEstruturaindividual(controleEstruturaGt, ""GT"", true, FormHelper.GetLogin("+objectName+ @".GerenteTerritorio));
+			CarregarDadosUcEstruturaindividual(controleEstruturaGr, ""GR"", true, FormHelper.GetLogin("+objectName+ @".GerenteRegiao));
+			CarregarDadosUcEstruturaindividual(controleEstruturaDiretor, ""Diretor"", true, FormHelper.GetLogin("+objectName+ @".DiretorVendas));
+            CarregarDadosUcEstruturaindividual(controleEstruturaGdr, ""GDR"", true, FormHelper.GetLogin("+objectName+ @".Gdr));
+			CarregarDadosUcEstruturaindividual(controleEstruturaCdr, ""CDR"", true, FormHelper.GetLogin("+objectName+ @".Cdr));
+        }
+        else
+        {
+            CarregarDadosUcEstruturaindividual(controleEstruturaGt, ""GT"");
+            CarregarDadosUcEstruturaindividual(controleEstruturaGr, ""GR"");
+			CarregarDadosUcEstruturaindividual(controleEstruturaDiretor, ""Diretor"");
+            CarregarDadosUcEstruturaindividual(controleEstruturaGdr, ""GDR"");
+			CarregarDadosUcEstruturaindividual(controleEstruturaCdr, ""CDR"");
+        }
+    }   
+  
+}
+
+protected void Load"#><#=entidadeName#><#= @"(Boolean defaultObject = false)
+{
+	//private "#><#=entidadeName#><#=" "#><#=objectName#><#= @";
+	//Crie este objeto na region properties
+
+    "#><#=objectName +" = " + objectName + " == null && CodigoItem > 0 ? new " + entidadeName + "().Obter(CodigoItem) : "+ objectName+";"#><#= @"
+	"#><#="if ("+ objectName +" == null && defaultObject)"#><#= @"
+    "#>	<#=	objectName +" = new "+ entidadeName + "();"#><#= @"
+}
+
+protected void LoadFormControlsFrom"#><#=entidadeName#><#= @"()
+{
+"#>\<#=<#="NegocioGeradorTT.PopularCarregarControlesSP(@\"" + urlSite + "\",configuracao.NomeLista)" #>\#><#= @"
+}
+
+protected void LoadFormFrom"#><#=entidadeName#><#= @"()
+{
+	if("#><#=objectName#><#= @" == null)
+		return;
+
+"#>\<#=<#="NegocioGeradorTT.PopularCarregarDadosSP(@\"" + urlSite + "\",configuracao.NomeLista)" #>\#><#= @"
+}
+
+protected void Load"#><#=entidadeName#><#= @"FromForm()
+{
+"#>\<#=<#="NegocioGeradorTT.PopularSalvarSP(@\"" + urlSite + "\",configuracao.NomeLista)" #>\#><#= @"
+
+	#region [DadosControle]
+
+	ControleBuscarDadosComercial wControleBuscarDadosComercial = new ControleBuscarDadosComercial(controleIbm);
+    ControleEstruturaIndividual wControleEstruturaGt = new ControleEstruturaIndividual(controleEstruturaGt);
+    ControleEstruturaIndividual wControleEstruturaGr = new ControleEstruturaIndividual(controleEstruturaGr);
+    ControleEstruturaIndividual wControleEstruturaDiretor = new ControleEstruturaIndividual(controleEstruturaDiretor);
+    ControleEstruturaIndividual wControleEstruturaCdr = new ControleEstruturaIndividual(controleEstruturaCdr);
+    ControleEstruturaIndividual wControleEstruturaGdr = new ControleEstruturaIndividual(controleEstruturaGdr);
+
+    "+objectName+ @".GerenteTerritorio = FormHelper.GetPeoplePickerValue(wControleEstruturaGt.ObterResponsavelNivel());
+    "+objectName+ @".GerenteRegiao = FormHelper.GetPeoplePickerValue(wControleEstruturaGr.ObterResponsavelNivel());
+    "+objectName+ @".DiretorVendas = FormHelper.GetPeoplePickerValue(wControleEstruturaDiretor.ObterResponsavelNivel());
+    "+objectName+ @".Cdr = FormHelper.GetPeoplePickerValue(wControleEstruturaCdr.ObterResponsavelNivel());
+    "+objectName+ @".Gdr = FormHelper.GetPeoplePickerValue(wControleEstruturaGdr.ObterResponsavelNivel());
+
+    "+objectName+ @".UtilizaZoneamentoGT = wControleEstruturaGt.UtilizaRezoneamento();
+    "+objectName+ @".UtilizaZoneamentoGR = wControleEstruturaGr.UtilizaRezoneamento();
+    "+objectName+ @".UtilizaZoneamentoDiretor = wControleEstruturaDiretor.UtilizaRezoneamento();
+    "+objectName+ @".UtilizaZoneamentoCdr = wControleEstruturaCdr.UtilizaRezoneamento();
+    "+objectName+ @".UtilizaZoneamentoGdr = wControleEstruturaGdr.UtilizaRezoneamento();
+    "+objectName+ @".UtilizaZoneamentoPadrao = "+objectName+ @".UtilizaZoneamentoGT && "+objectName+ @".UtilizaZoneamentoGR && "+objectName+ @".UtilizaZoneamentoDiretor
+        && "+objectName+ @".UtilizaZoneamentoCdr && "+objectName+ @".UtilizaZoneamentoGdr;
+
+            
+    "+objectName+ @".Ibm = FormHelper.GetIntValue(wControleBuscarDadosComercial.ObterIbm());
+
+
+	#endregion 
+
+}
+
+protected void Salvar"#><#=entidadeName#><#= @"()
+{"#>
+	<#="//Load"+entidadeName + "(true);" #>
+<#= @"	//Load"#><#=entidadeName#><#=@"FromForm();
+	//Coloque este trecho no início do evento
+
+	if (CodigoItem > 0)
+        "+objectName+ @".Atualizar();
+    else
+    {
+        "+objectName+ @".Inserir();
+        CodigoItem = "+objectName+ @".ID;
+    }
+
+	//String nomeSolicitacao = String.Format(""[Comodato] – {0} – {1} ({2}) – {3}"", "+objectName+ @".TipoAcaoComodato.TipoAcao, "+objectName+ @".RazaoSocial, "+objectName+ @".Ibm.ToString(), "+objectName+ @".ID);
+    //nomeSolicitacao = nomeSolicitacao.Length <= 255 ? nomeSolicitacao :
+    //    String.Format(""[Comodato] – {0} – {1} ({2}) – {3}"", "+objectName+ @".TipoAcaoComodato.TipoAcao, "+objectName+ @".RazaoSocial.Substring(0, "+objectName+ @".RazaoSocial.Length > nomeSolicitacao.Length - 255 ? nomeSolicitacao.Length - 255 : nomeSolicitacao.Length), "+objectName+ @".Ibm.ToString(), "+objectName+ @".ID);
+	//
+    //if ("+objectName+ @".Titulo != nomeSolicitacao)
+    //{
+    //    "+objectName+ @".Titulo = nomeSolicitacao;
+    //    "+objectName+ @".Atualizar();
+    //}
+}
+
+
+#region [User Control Estrutura Comercial - Interface]
+
+//Método chamado pelos controles - Core
+public void CarregarDadosComercial(Control control, String dadosComercial)
+{
+	EventoTratado(CarregarDadosComercialLocal, control, dadosComercial);
+}
+
+//Método chamado pelos controles - Core
+public void MudarZoneamentoPadrao(Control control, Boolean habilitado)
+{
+    ControleBuscarDadosComercial wControleBuscarEstruturaComercial = new ControleBuscarDadosComercial(controleIbm);
+    wControleBuscarEstruturaComercial.ChamadaWebServiceHabilitada(true);//Querem recarregar sempre
+    if (habilitado)
+        wControleBuscarEstruturaComercial.RecarregarEstruturaComercial();
+
+    if (control == controleEstruturaGt)
+        new ControleEstruturaIndividual(controleEstruturaGt).ControlesHabilitados(habilitado);
+    else if (control == controleEstruturaGr)
+        new ControleEstruturaIndividual(controleEstruturaGr).ControlesHabilitados(habilitado);
+    else if (control == controleEstruturaCdr)
+        new ControleEstruturaIndividual(controleEstruturaCdr).ControlesHabilitados(habilitado);
+    else if (control == controleEstruturaDiretor)
+        new ControleEstruturaIndividual(controleEstruturaDiretor).ControlesHabilitados(habilitado);
+    else if (control == controleEstruturaGdr)
+        new ControleEstruturaIndividual(controleEstruturaGdr).ControlesHabilitados(habilitado);
+}
+
+protected KeyValuePair<Boolean, String> CarregarDadosComercialLocal(object _control, object _dadosComercial)
+{
+	KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+
+    Control control = (Control)_control;
+    String dadosComercial = (String)_dadosComercial;
+
+    LimparDadosComercial();
+    DadosComercialSalesForce dados = Serializacao.DeserializeFromJson<DadosComercialSalesForce>(dadosComercial);
+
+    if (dados != null && (dados.Ibm != null || dados.SiteCode != null))
+    {
+        if (control == controleIbm)
+            retorno = new KeyValuePair<bool, string>(false, ""Número do IBM ou Site Code não encontrado"");
+    }
+
+    if (retorno.Key)
+        CarregarEstruturaComercial(dados);
+
+    return retorno;
+}
+
+protected void CarregarEstruturaComercial(DadosComercialSalesForce dados)
+{
+	RecarregarDadosUcEstruturaindividual(controleEstruturaGt, ""GT"", dados.GerenteTerritorio != null ? dados.GerenteTerritorio : string.Empty, true);
+	RecarregarDadosUcEstruturaindividual(controleEstruturaGr, ""GR"", dados.GerenteRegiao != null ? dados.GerenteRegiao : string.Empty, true);
+	RecarregarDadosUcEstruturaindividual(controleEstruturaDiretor, ""Diretor"", dados.DiretorVendas != null ? dados.DiretorVendas : string.Empty, true);
+	RecarregarDadosUcEstruturaindividual(controleEstruturaCdr, ""CDR"", dados.Gdr != null ? dados.Cdr : string.Empty, true);
+	RecarregarDadosUcEstruturaindividual(controleEstruturaGdr, ""GDR"", dados.Gdr != null ? dados.Gdr : string.Empty, true);
+}
+
+protected void LimparDadosComercial()
+{
+	CarregarDadosUcEstruturaindividual(controleEstruturaGt, ""GT"");
+	CarregarDadosUcEstruturaindividual(controleEstruturaGr, ""GR"");
+	CarregarDadosUcEstruturaindividual(controleEstruturaDiretor, ""Diretor"");
+	CarregarDadosUcEstruturaindividual(controleEstruturaCdr, ""CDR"");
+	CarregarDadosUcEstruturaindividual(controleEstruturaGdr, ""GDR"");
+}
+
+#endregion
+
+"#>
+<#@ output extension="Temp.tt" #>

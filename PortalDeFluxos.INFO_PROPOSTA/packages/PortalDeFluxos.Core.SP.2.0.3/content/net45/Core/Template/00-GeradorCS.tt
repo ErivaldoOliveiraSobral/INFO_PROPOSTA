@@ -1,0 +1,610 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#
+	var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+	var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+	var projectNameSP = "";
+	var dllPath = "";
+	var projectNameBll = "";
+	var jsonPath = "";
+	foreach (Project p in dte.Solution.Projects)
+	{
+		if(p.Name.Contains("BLL"))
+		{	
+			projectNameBll = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			dllPath = solutionDirectory + @"\bin\Debug\";
+		}
+		else if(p.Name.Contains("SP"))
+		{	
+			projectNameSP = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			jsonPath = solutionDirectory + @"\Core\Template\00-ConfiguracaoTT.json";
+		}
+	}
+	String json = System.IO.File.ReadAllText(jsonPath);
+	JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+	object jsonObj = serializer.Deserialize<object>(json);
+	String urlSite = ((Dictionary<String, object>)jsonObj)["UrlSite"].ToString();
+    String entidadeName = ((Dictionary<String, object>)jsonObj)["EntidadeLista"].ToString();
+	object[] entidades = (object[])((Dictionary<String, object>)jsonObj)["EntidadesBD"];
+	var objectNameBD = "";
+	var objectNameSP = "_proposta"+entidadeName;
+#>
+\<#<#= "@ template debug=\"false\" hostspecific=\"True\" language=\"C#\" " #>\#>
+\<#<#= "@ assembly name=\"System.Core\" " #>\#>
+\<#<#= "@ import namespace=\"System.Linq\" " #>\#>
+\<#<#= "@ import namespace=\"System.Text\" " #>\#>
+\<#<#= "@ import namespace=\"System.Collections.Generic\" " #>\#>
+\<#<#= "@ import namespace=\"System.IO\" " #>\#>
+\<#<#= "@ import namespace=\"System.Reflection\" " #>\#>
+\<#<#= "@ assembly name=\"EnvDTE\" " #>\#>
+\<#<#= "@ import namespace=\"EnvDTE\" " #>\#><#
+	if(dllPath != "")
+    {
+        foreach (string dll in Directory.GetFiles(dllPath, "*.dll"))
+        {
+            if(dll != "")
+                #>\<#<#= "@ assembly name=\""+ dll +"\" "#>\#><#=""#><#
+        }
+#>\<#<#= "@ import namespace=\""+ projectNameBll +".Modelo\" "#>\#><#=""#><#
+    }
+#>\<#<#= "@ import namespace=\"Iteris\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo.T4\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Utilitario\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Negocio\" " #>\#>
+\<#<#= "@ output extension=\"Final.txt\" " #>\#>
+\<#<#= "ConfiguraoTT configuracao = NegocioGeradorTT.ObterConfiguracaoTT(@\"" + jsonPath + "\");"  #>\#>
+\<#<#= "var objectName = \"_proposta\"+configuracao.EntidadeLista.ToObjectName();"#>\#>
+\<#<#= "var menuSelecionado = configuracao.Menus.Where(m => m.Selecionado).FirstOrDefault();"  #>\#>
+<#= @"using PortalDeFluxos.Core.BLL.Modelo;
+using PortalDeFluxos.Core.BLL.Negocio;
+using PortalDeFluxos.Core.BLL.Utilitario;
+using PortalDeFluxos.Core.SP.Core.BaseControls;
+using PortalDeFluxos.Core.Wrapper;
+using "+projectNameBll+@".Modelo;
+using System;
+using System.Collections.Generic;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+
+namespace "#><#=projectNameSP#><#=".ControlTemplates."#><#=projectNameSP#><#=@"
+{
+	public partial class "#>\<#=<#= "configuracao.NomeControle"#>\#><#= @" : CustomForm, ICustomForm
+	{
+		
+		#region [propriedades]
+
+		private "#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@" "#>\<#=<#="objectName"#>\#><#=@";
+		private Control controleIbm;
+        private Control controleEstruturaGt;
+        private Control controleEstruturaGr;
+        private Control controleEstruturaDiretor;
+        private Control controleEstruturaCdr;
+        private Control controleEstruturaGdr;
+		"#><#
+	if(entidades.Length > 0)
+    {
+        foreach (object entidadeNameBD in entidades)
+            if(entidadeNameBD != "")
+			{
+				objectNameBD = "_proposta" + entidadeNameBD;
+				#><#= @"
+		private "+entidadeNameBD+" "+objectNameBD+@";
+	"#><#
+			}                
+    }	
+#><#= @"
+		#endregion
+
+		#region [Evento]
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            LoadMenu();
+        }
+
+        protected override void CreateChildControls()
+        {
+            base.CreateChildControls();
+            EventoTratado(LoadControls, false);
+        }
+
+        #region [Click]
+
+        protected void btnSalvar_Click(object sender, EventArgs e)
+        {
+			//Não modificar o evento
+			//Qualquer tratativa deve ser realizada dentro do método SalvarFormulario
+            Salvar(false);
+        }
+
+        protected void btnSalvarIniciar_Click(object sender, EventArgs e)
+        {
+			//Não modificar o evento
+			//Qualquer tratativa deve ser realizada dentro do método SalvarFormulario
+			Salvar(true);           
+        }
+
+        protected void btnCancelar_Click(object sender, EventArgs e)
+        {
+            Cancelar();
+        }
+
+        protected void btnAnexoPorEmail_Click(object sender, EventArgs e)
+        {
+            EnviarEmailAnexo();
+        }
+				
+		protected void btnObterPDF_Click(object sender, EventArgs e)
+        {
+            EventoTratado(DownloadPDF);
+        }
+		
+		protected void btnReiniciarFluxo_Click(object sender, EventArgs e)
+        {
+            ReiniciarFluxoForm();
+        }
+
+        #endregion
+		
+        #endregion
+		
+		#region [Métodos - Eventos Tratados]
+
+		protected void LoadMenu()
+		{
+			List<KeyValuePair<String,String>> listaMenus = new List<KeyValuePair<String,String>>(); 
+			"#>\<#<#= @"foreach (var menuAtual in configuracao.Menus)
+			{" #>\#><#= @"
+		listaMenus.Add(new KeyValuePair<String, String>("""#>\<#=<#="menuAtual.IdMenu"#>\#><#="\",\"" #>\<#=<#="menuAtual.NomeMenu"#>\#><#= @"""));
+			"#>\<#<#="}"#>\#><#= @"
+		listaMenus.Add(new KeyValuePair<String, String>(""menuAnexo"", ""Anexo""));
+			" #>\<#=<#= @"menuSelecionado == null ? """" : @""CarregarFormulario(listaMenus,"""""" + menuSelecionado.IdMenu + ""\"""" +
+			"",\"" Nome Formulário \"""" +
+			"", LoadForm"" +
+			"", LoadPermissao""+
+			"", SalvarFormulario);"""#>\#><#= @"
+		}
+
+		public KeyValuePair<Boolean, String> LoadControls()
+        {
+			KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+            
+			//os usercontrols do Core devem carregados neste método.
+            CarregarUcAnexos(phUcAnexos);
+            LoadEstruturaComercialControls();
+            //LoadAnoControls();
+            //LoadCustomGridProdutos();
+
+            if (!this.IsPostBack)
+            {
+                LoadFormEstruturaComercialControls();
+                //LoadAnoContratual();
+                //LoadFormAnoControls();
+                //LoadProdutos();
+                //LoadFormCustomGridProdutos();
+            }
+
+            return retorno;
+        }
+
+        public KeyValuePair<Boolean,String> SalvarFormulario(Boolean reiniciarFluxo)
+        {
+			KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+			
+			if (reiniciarFluxo && new ControleAnexo(controlAnexo).ObterQuantidadeAnexos() <= 0)
+				return new KeyValuePair<Boolean, String>(false, ""Fluxo não pode ser iniciado se não tiver anexos.""); 
+			
+			 Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"(true);
+			 Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"FromForm();
+			 Salvar"#><#=entidadeName#><#= @"();
+			"#><#	
+		if(entidades.Length > 0)
+		{
+			foreach (object entidadeNameBD in entidades)
+				if(entidadeNameBD != "")
+				{
+					objectNameBD = "_proposta" + entidadeNameBD;
+					#><#= @"
+			Load"+entidadeNameBD+@"(true);
+			Load"+entidadeNameBD+@"FromForm();
+			Salvar"+entidadeNameBD+@"();
+		"#><#	}                
+		}
+		#><#= @"  
+			
+            AcaoFluxo("#>\<#=<#="objectName"#>\#><#= @", reiniciarFluxo);
+
+			return retorno;
+        }
+		
+		public KeyValuePair<Boolean,String> DownloadPDF()
+        {
+			KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+			
+			Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"();
+            if ("#>\<#=<#="objectName"#>\#><#= @" == null)
+                retorno = new KeyValuePair<Boolean, String>(false, String.Empty);
+            if (retorno.Key)
+            {
+                KeyValuePair<String, Microsoft.SharePoint.Client.FileInformation> pdf = NegocioPdf.Download("#>\<#=<#="objectName"#>\#><#= @".ObterNomeLista(), "#>\<#=<#="objectName"#>\#><#= @".ID);
+                retorno = new KeyValuePair<Boolean, String>(pdf.Value != null, String.Empty);
+                if (retorno.Key)
+                    FormHelper.Download(pdf.Key, pdf.Value);
+            }
+			
+            if (!retorno.Key)
+                retorno = new KeyValuePair<Boolean, String>(true, ""PDF não foi encontrado"");
+
+			return retorno;
+        }
+		
+		#endregion
+
+		#region [Métodos - Load]
+
+		#region [Load Controles]
+
+		protected void LoadFormControls()
+        {
+		"#>\<#=<#="NegocioGeradorTT.PopularCarregarControlesSP(@\"" + urlSite + "\",configuracao.NomeLista)" #>\#><#	
+		if(entidades.Length > 0)
+		{
+		#><#= @"
+			throw new NotImplementedException(""Verificar o método e depois apagar o NotImplementedException"");
+			//Mudar o código abaixo com a busca correta - o nome da propriedade id pode variar
+		"#><#
+			foreach (object entidadeNameBD in entidades)
+				if(entidadeNameBD != "")
+				{
+					#>\<#=<#="NegocioGeradorTT.PopularCarregarControlesBD<" + entidadeNameBD + ">()" #>\#><#	
+				}                
+		}
+		#><#= @"
+		}
+
+		#region [Estrutura Comercial]
+
+        protected void LoadEstruturaComercialControls()
+        {
+            #region [Proposta]
+
+			controleIbm = CarregarUcBuscarEstruturaComercial(divBuscarEstruturaComercial_IBM);
+            controleEstruturaGt = CarregarUcEstruturaIndividual(plhEstruturaGt);
+            controleEstruturaGr = CarregarUcEstruturaIndividual(plhEstruturaGr);
+            controleEstruturaDiretor = CarregarUcEstruturaIndividual(plhEstruturaDiretor);
+            controleEstruturaCdr = CarregarUcEstruturaIndividual(plhEstruturaCdr);
+            controleEstruturaGdr = CarregarUcEstruturaIndividual(plhEstruturaGdr);
+
+            #endregion
+        }
+
+        protected void LoadFormEstruturaComercialControls()
+        {
+           if ("+objectNameSP+ @" != null)
+			{
+				CarregarDadosUcBuscarEstruturaComercial(controleIbm, "+objectNameSP+ @".Ibm, true, !BtnVisible, String.Empty);
+				//CarregarDadosUcBuscarEstruturaComercial(controleSiteCode, "+objectNameSP+ @".SiteCode, false, !BtnVisible, String.Empty);
+                
+				DadosComercialSalesForce dadosSales = new DadosComercialSalesForce();
+                dadosSales.GerenteTerritorio = FormHelper.GetLogin("+objectNameSP+ @".GerenteTerritorio);
+                dadosSales.GerenteRegiao = FormHelper.GetLogin("+objectNameSP+ @".GerenteRegiao);
+                dadosSales.DiretorVendas = FormHelper.GetLogin("+objectNameSP+ @".DiretorVendas);
+                dadosSales.Cdr = FormHelper.GetLogin("+objectNameSP+ @".Gdr);
+                dadosSales.Gdr = FormHelper.GetLogin("+objectNameSP+ @".Cdr);
+                CarregarEstruturaComercial(dadosSales);
+            }
+            else
+                CarregarEstruturaComercial();
+        }
+
+		protected void CarregarEstruturaComercial(DadosComercialSalesForce dados = null)
+        {
+            CarregarDadosUcEstruturaindividual(controleEstruturaGt, ""GT"",dados!= null && dados.GerenteTerritorio != null ? dados.GerenteTerritorio : string.Empty, rezoneamentoVisivel: true);
+            CarregarDadosUcEstruturaindividual(controleEstruturaGr, ""GR"", dados != null && dados.GerenteRegiao != null ? dados.GerenteRegiao : string.Empty, rezoneamentoVisivel: true);
+            CarregarDadosUcEstruturaindividual(controleEstruturaDiretor, ""Diretor"", dados != null && dados.DiretorVendas != null ? dados.DiretorVendas : string.Empty, rezoneamentoVisivel: true);
+            CarregarDadosUcEstruturaindividual(controleEstruturaCdr, ""CDR"", dados != null && dados.Cdr != null ? dados.Cdr : string.Empty, rezoneamentoVisivel: true);
+            CarregarDadosUcEstruturaindividual(controleEstruturaGdr, ""GDR"", dados != null && dados.Gdr != null ? dados.Gdr : string.Empty, rezoneamentoVisivel: true);
+        }
+
+        #endregion
+
+		#endregion
+
+		#region [Load Form]
+
+		public void LoadPermissao()
+        {
+			Boolean fluxoAtivo = this.FluxoAtivo;
+            Boolean permissaoEditar = this.PermissaoEditar;
+            Boolean fluxoFinalizado = this.FluxoFinalizado;
+            Boolean propostaEmAprovacao = this.PropostaEmAprovacao;
+
+            BtnVisible = !fluxoFinalizado && (!propostaEmAprovacao && permissaoEditar);
+
+            btnIniciar.Visible = BtnVisible;
+            btnSalvar.Visible = BtnVisible;
+            btnReiniciarFluxo.Visible = !btnIniciar.Visible && !fluxoFinalizado && permissaoEditar && !fluxoAtivo;
+            btnObterPDF.Visible = fluxoFinalizado || (fluxoAtivo && permissaoEditar);
+            btnAnexoPorEmail.Visible = this.CodigoItem > 0;
+			
+			if (btnObterPDF.Visible)
+            {
+                Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"();
+                KeyValuePair<String, Microsoft.SharePoint.Client.FileInformation> pdf = NegocioPdf.Download("#>\<#=<#="objectName"#>\#><#= @".ObterNomeLista(), "#>\<#=<#="objectName"#>\#><#= @".ID);
+                if(pdf.Value != null)
+                {
+                    ScriptManager scriptMan = ScriptManager.GetCurrent(this.Page);
+                    btnObterPDF.OnClientClick = ""window.setTimeout(function() { _spFormOnSubmitCalled = false; }, 10);"";
+                    scriptMan.RegisterPostBackControl(btnObterPDF);
+                }
+            }
+			
+			if (!this.IsPostBack)
+				DisableAllControls(this, BtnVisible);
+        }
+
+		public void LoadForm()
+		{
+			LoadFormControls();
+
+			Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"();
+            LoadFormFrom"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"();
+			"#><#	
+		if(entidades.Length > 0)
+		{
+			foreach (object entidadeNameBD in entidades)
+				if(entidadeNameBD != "")
+				{
+					objectNameBD = "_proposta" + entidadeNameBD;
+					#><#= @"
+			Load"+entidadeNameBD+@"();
+			LoadFormFrom"+entidadeNameBD+@"();
+		"#><#	}                
+		}
+		#><#= @"           
+		}
+
+		protected void Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"(Boolean defaultObject = false)
+        {
+            "#>\<#=<#="objectName"#>\#><#=@" = "#>\<#=<#="objectName"#>\#><#=@" == null && CodigoItem > 0 ? new "#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"().Obter(CodigoItem) : "#>\<#=<#="objectName"#>\#><#=@";
+
+            if ("#>\<#=<#="objectName"#>\#><#=@" == null && defaultObject)
+                "#>\<#=<#="objectName"#>\#><#=@" = new "#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"();
+        }
+
+		protected void LoadFormFrom"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"()
+		{
+			if("#>\<#=<#="objectName"#>\#><#=@" == null)
+				return;
+			
+			TituloFormulario = "#>\<#=<#="objectName"#>\#><#=@" != null ? "#>\<#=<#="objectName"#>\#><#=@".Titulo : TituloFormulario;
+
+		"#>\<#=<#="NegocioGeradorTT.PopularCarregarDadosSP(@\"" + urlSite + "\",configuracao.NomeLista)" #>\#><#= @"
+		}
+
+		protected void Load"#>\<#=<#="configuracao.EntidadeLista"#>\#><#=@"FromForm()
+		{
+		"#>\<#=<#="NegocioGeradorTT.PopularSalvarSP(@\"" + urlSite + "\",configuracao.NomeLista)" #>\#><#= @"
+
+			#region [DadosControle]
+
+			ControleBuscarDadosComercial wControleBuscarDadosComercial = new ControleBuscarDadosComercial(controleIbm);
+			ControleEstruturaIndividual wControleEstruturaGt = new ControleEstruturaIndividual(controleEstruturaGt);
+			ControleEstruturaIndividual wControleEstruturaGr = new ControleEstruturaIndividual(controleEstruturaGr);
+			ControleEstruturaIndividual wControleEstruturaDiretor = new ControleEstruturaIndividual(controleEstruturaDiretor);
+			ControleEstruturaIndividual wControleEstruturaCdr = new ControleEstruturaIndividual(controleEstruturaCdr);
+			ControleEstruturaIndividual wControleEstruturaGdr = new ControleEstruturaIndividual(controleEstruturaGdr);
+
+			"#>\<#=<#="objectName"#>\#><#= @".GerenteTerritorio = (Usuario)FormHelper.GetPeoplePickerValue(wControleEstruturaGt.ObterResponsavelNivel());
+			"#>\<#=<#="objectName"#>\#><#= @".GerenteRegiao = (Usuario)FormHelper.GetPeoplePickerValue(wControleEstruturaGr.ObterResponsavelNivel());
+			"#>\<#=<#="objectName"#>\#><#= @".DiretorVendas = (Usuario)FormHelper.GetPeoplePickerValue(wControleEstruturaDiretor.ObterResponsavelNivel());
+			"#>\<#=<#="objectName"#>\#><#= @".Cdr = (Usuario)FormHelper.GetPeoplePickerValue(wControleEstruturaCdr.ObterResponsavelNivel());
+			"#>\<#=<#="objectName"#>\#><#= @".Gdr = (Usuario)FormHelper.GetPeoplePickerValue(wControleEstruturaGdr.ObterResponsavelNivel());
+
+			"#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoGT = wControleEstruturaGt.UtilizaRezoneamento();
+			"#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoGR = wControleEstruturaGr.UtilizaRezoneamento();
+			"#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoDiretor = wControleEstruturaDiretor.UtilizaRezoneamento();
+			"#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoCdr = wControleEstruturaCdr.UtilizaRezoneamento();
+			"#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoGdr = wControleEstruturaGdr.UtilizaRezoneamento();
+			"#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoPadrao = "#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoGT && "#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoGR && "#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoDiretor
+				&& "#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoCdr && "#>\<#=<#="objectName"#>\#><#= @".UtilizaZoneamentoGdr;
+
+            
+			"#>\<#=<#="objectName"#>\#><#= @".Ibm = FormHelper.GetIntValue(wControleBuscarDadosComercial.ObterIbm());
+
+
+			#endregion 
+
+		}		
+		"#><#
+		if(entidades.Length > 0)
+		{
+			foreach (object entidadeNameBD in entidades)
+				if(entidadeNameBD != "")
+				{
+					objectNameBD = "_proposta" + entidadeNameBD;
+					#><#= @"
+			
+		protected void Load"+entidadeNameBD+@"(Boolean defaultObject = false)
+		{
+			throw new NotImplementedException(""Verificar o método e depois apagar o NotImplementedException"");
+			//Mudar o código abaixo com a busca correta - o nome da propriedade id pode variar
+
+			"#><#="//"+objectNameBD +" = " + objectNameBD + " == null && CodigoItem > 0 ? new " + entidadeNameBD + "().Obter(CodigoItem) : "+ objectNameBD+";"#><#= @"
+			"#><#="//if ("+ objectNameBD +" == null && defaultObject)"#><#= @"
+			"#><#="//"+objectNameBD +" = new "+ entidadeNameBD + "();"#><#= @"
+		}
+
+		protected void LoadFormFrom"+entidadeNameBD+@"()
+		{
+			if("+objectNameBD+@" == null)
+				return;
+		
+			"#>\<#=<#= "NegocioGeradorTT.PopularCarregarDadosBD<" + entidadeNameBD + ">()" #>\#><#= @"
+		}
+
+		protected void Load"+entidadeNameBD+@"FromForm()
+		{
+			if("+objectNameBD+@" == null)
+				return;
+
+			"#>\<#=<#= "NegocioGeradorTT.PopularSalvarBD<" + entidadeNameBD + ">()" #>\#><#= @"
+		}
+		"#><#	}                
+		}	
+	#><#= @"
+		#endregion
+		
+		#endregion
+
+		#region [Métodos - Salvar]
+
+		protected void Salvar"#><#=entidadeName#><#= @"()
+		{
+			if (CodigoItem > 0)
+				"+objectNameSP+ @".Atualizar();
+			else
+			{
+				"+objectNameSP+ @".Inserir();
+				CodigoItem = "+objectNameSP+ @".ID;
+			}
+
+			//String nomeSolicitacao = String.Format(""[Comodato] – {0} – {1} ({2}) – {3}"", "+objectNameSP+ @".TipoAcaoComodato.TipoAcao, "+objectNameSP+ @".RazaoSocial, "+objectNameSP+ @".Ibm.ToString(), "+objectNameSP+ @".ID);
+			//nomeSolicitacao = nomeSolicitacao.Length <= 255 ? nomeSolicitacao :
+			//    String.Format(""[Comodato] – {0} – {1} ({2}) – {3}"", "+objectNameSP+ @".TipoAcaoComodato.TipoAcao, "+objectNameSP+ @".RazaoSocial.Substring(0, "+objectNameSP+ @".RazaoSocial.Length > nomeSolicitacao.Length - 255 ? nomeSolicitacao.Length - 255 : nomeSolicitacao.Length), "+objectNameSP+ @".Ibm.ToString(), "+objectNameSP+ @".ID);
+			//
+			//if ("+objectNameSP+ @".Titulo != nomeSolicitacao)
+			//{
+			//    "+objectNameSP+ @".Titulo = nomeSolicitacao;
+			//    "+objectNameSP+ @".Atualizar();
+			//}	
+		}
+
+		"#><#	
+		if(entidades.Length > 0)
+		{
+			foreach (object entidadeNameBD in entidades)
+				if(entidadeNameBD != "")
+				{
+					objectNameBD = "_proposta" + entidadeNameBD;
+					#><#= @"
+		protected void Salvar"+entidadeNameBD+@"()
+		{
+			throw new NotImplementedException(""Verificar o método e depois apagar o NotImplementedException"");
+			//Mudar o código abaixo com a busca correta - o nome da propriedade id pode variar
+		
+			//if("+objectNameBD+@" == null)
+				//return;
+		
+			//if("+objectNameBD+@".Id > 0)
+					//"+objectNameBD+@".Atualizar();
+			//else
+			{
+				//"+objectNameBD+@".Id = inserir o id correto;
+				//"+objectNameBD+@".Inserir();
+			}
+		}
+		"#><#	}                
+		}	
+		#><#= @"
+		#endregion
+
+		#region [Métodos - Auxiliares]
+				
+
+        #endregion
+
+		#region [Controles - Core]
+
+		#region [User Control Estrutura Comercial - Interface]
+
+		//Método chamado pelos controles - Core
+		public void CarregarDadosComercial(Control control, String dadosComercial)
+		{
+			EventoTratado(CarregarDadosComercialLocal,false, control, dadosComercial);
+		}
+
+		//Método chamado pelos controles - Core
+		public void MudarZoneamentoPadrao(Control control, Boolean habilitado)
+		{
+			ControleBuscarDadosComercial wControleBuscarEstruturaComercial = new ControleBuscarDadosComercial(controleIbm);
+			wControleBuscarEstruturaComercial.ChamadaWebServiceHabilitada(true);//Recarrega sempre.
+			if (habilitado)
+				wControleBuscarEstruturaComercial.RecarregarEstruturaComercial();
+
+			if (control == controleEstruturaGt)
+				new ControleEstruturaIndividual(controleEstruturaGt).ControlesHabilitados(habilitado);
+			else if (control == controleEstruturaGr)
+				new ControleEstruturaIndividual(controleEstruturaGr).ControlesHabilitados(habilitado);
+			else if (control == controleEstruturaCdr)
+				new ControleEstruturaIndividual(controleEstruturaCdr).ControlesHabilitados(habilitado);
+			else if (control == controleEstruturaDiretor)
+				new ControleEstruturaIndividual(controleEstruturaDiretor).ControlesHabilitados(habilitado);
+			else if (control == controleEstruturaGdr)
+				new ControleEstruturaIndividual(controleEstruturaGdr).ControlesHabilitados(habilitado);
+		}
+
+		protected KeyValuePair<Boolean, String> CarregarDadosComercialLocal(object _control, object _dadosComercial)
+        {
+            KeyValuePair<Boolean, String> retorno = new KeyValuePair<Boolean, String>(true, String.Empty);
+            Control control = (Control)_control;
+            String dadosComercial = (String)_dadosComercial;
+
+            CarregarEstruturaComercial();
+            DadosComercialSalesForce dados = Serializacao.DeserializeFromJson<DadosComercialSalesForce>(dadosComercial);
+
+            if (dados == null || dados.Ibm == null || dados.SiteCode == null)
+				retorno = new KeyValuePair<bool, string>(false, ""Número do IBM ou Site Code não encontrado"");
+
+            if (retorno.Key)
+                CarregarEstruturaComercial(dados);
+
+            return retorno;
+        }
+		
+		#endregion
+
+		#region [User Control Menu- Interface]
+
+		public List<KeyValuePair<String, String>> ObterConfiguracaoMenu()
+		{
+			return _listaConfiguracaoMenu;
+		}
+
+		public String ObterMenuAtivo()
+		{
+			return _idMenuAtivo;
+		}
+
+		public Boolean ExibirMenuTarefa()
+		{
+			return _exibirMenuTarefa;
+		}
+		
+		public String ObterTituloFormulario()
+		{
+			return TituloFormulario;
+		}
+		
+		#endregion
+	
+		#endregion
+
+	}
+}"#><#@ output extension="Temp.tt" #>

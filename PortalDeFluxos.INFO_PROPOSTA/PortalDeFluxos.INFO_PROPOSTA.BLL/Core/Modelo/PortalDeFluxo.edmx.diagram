@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f3a6945f1d5b4cee941989dff7b6f636" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Cidade" Width="1.5" PointX="4.875" PointY="20.375" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Delegacao" Width="1.5" PointX="5.5" PointY="3.875" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Documento" Width="1.5" PointX="9.75" PointY="6.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.EmailAttachment" Width="1.5" PointX="5.375" PointY="13.5" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Estado" Width="1.5" PointX="2.75" PointY="20.375" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.EstruturaComercial" Width="1.5" PointX="12.25" PointY="10.5" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.EstruturaComercial_Modificada" Width="1.5" PointX="3.25" PointY="13.5" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.EstruturaComercial_Salesforce" Width="1.5" PointX="3.25" PointY="16.875" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.HorarioVerao" Width="1.5" PointX="7.75" PointY="14.875" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.ListaHist" Width="1.5" PointX="5.375" PointY="0.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Log" Width="1.5" PointX="12.25" PointY="13.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.LogIntegracao" Width="1.5" PointX="12.25" PointY="3.25" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Parametro" Width="1.5" PointX="7.75" PointY="17" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.PropostaDocumento" Width="1.5" PointX="9.875" PointY="3.75" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.ServicoAgendado" Width="1.5" PointX="12.25" PointY="16.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.TabelaExemplo" Width="1.5" PointX="12.25" PointY="0.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.TarefaHist" Width="1.5" PointX="7.75" PointY="11" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.TipoPropostaDocumento" Width="1.5" PointX="12.25" PointY="7.125" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.WFGestaoFluxo_Fluxo" Width="1.5" PointX="14.25" PointY="5.125" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.WFGestaoFluxo_Tarefa" Width="1.5" PointX="14.25" PointY="9.625" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_Cidade_Estado" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_PropostasDocumento_Documento" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_TipoPropostaDocumento_Documento" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Lista" Width="1.5" PointX="0.75" PointY="0.5" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_ListaHist_Lista" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.AnoContratual" Width="1.5" PointX="10" PointY="10.75" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Lembrete" Width="1.5" PointX="5.375" PointY="8.5" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.Tarefa" Width="1.5" PointX="3" PointY="1.5" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_Lembrete_Tarefa" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_Tarefa_Discussao" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_TarefaHist_Tarefa" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.RelatorioOperacionalTarefa" Width="1.5" PointX="14.25" PointY="0.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.InstanciaFluxo" Width="1.5" PointX="0.625" PointY="5" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_InstanciaFluxo_Lista" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_Tarefa_InstanciaFluxo" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.GrupoSP" Width="1.5" PointX="16.25" PointY="7.625" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.GrupoUsuariosSP" Width="1.5" PointX="16.375" PointY="4.25" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.UsuarioSP" Width="1.5" PointX="16.25" PointY="0.625" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_GrupoUsuariosSP_GrupoSP" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_GrupoUsuariosSP_UsuariosSP" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.SAEParametros" Width="1.5" PointX="16.375" PointY="10" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.TipoProposta" Width="1.5" PointX="7.375" PointY="8.625" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_AnoContratual_TipoProposta" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_PropostaDocumento_TipoProposta" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_TipoPropostaDocumento_TipoProposta" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.AnexoFacil" Width="1.5" PointX="0.75" PointY="14.75" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.AnexoFacilIntegracao" Width="1.5" PointX="16.75" PointY="13.75" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.CEGR" Width="1.5" PointX="9.625" PointY="20.75" />
+        <EntityTypeShape EntityType="PortalDeFluxoModel.CEGR_Cidade" Width="1.5" PointX="7.125" PointY="20.5" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_CEGR_CEGR" />
+        <AssociationConnector Association="PortalDeFluxoModel.FK_CEGR_Cidade" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

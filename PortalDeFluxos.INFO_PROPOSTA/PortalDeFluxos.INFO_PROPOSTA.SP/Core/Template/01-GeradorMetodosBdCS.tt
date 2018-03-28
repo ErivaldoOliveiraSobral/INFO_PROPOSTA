@@ -1,0 +1,159 @@
+﻿<#@ template debug="false" hostspecific="True" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.Web" #>
+<#@ assembly name="System.Web.Extensions" #>
+<#@ import namespace="System.Web.Script.Serialization" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#
+
+    var serviceProvider = this.Host as IServiceProvider;
+    var dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+	var solutionDirectory = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+	var dllPath = "";
+	var projectNameBll = "";
+	var jsonPath = "";
+	foreach (Project p in dte.Solution.Projects)
+	{
+		if(p.Name.Contains("BLL"))
+		{	
+			projectNameBll = p.Name;
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			dllPath = solutionDirectory + @"\bin\Debug\";			
+		}
+		else if(p.Name.Contains("SP"))
+		{
+			solutionDirectory = System.IO.Path.GetDirectoryName(p.FullName);
+			jsonPath = solutionDirectory + @"\Core\Template\00-ConfiguracaoTT.json";
+		}			
+	}
+	String json = System.IO.File.ReadAllText(jsonPath);
+	JavaScriptSerializer serializer = new JavaScriptSerializer() { MaxJsonLength = Int32.MaxValue };
+	object jsonObj = serializer.Deserialize<object>(json);
+	object[] entidades = (object[])((Dictionary<String, object>)jsonObj)["EntidadesBD"];
+	#>
+\<#<#= "@ template debug=\"false\" hostspecific=\"True\" language=\"C#\" " #>\#>
+\<#<#= "@ assembly name=\"System.Core\" " #>\#>
+\<#<#= "@ import namespace=\"System.Linq\" " #>\#>
+\<#<#= "@ import namespace=\"System.Text\" " #>\#>
+\<#<#= "@ import namespace=\"System.Collections.Generic\" " #>\#>
+\<#<#= "@ import namespace=\"System.IO\" " #>\#>
+\<#<#= "@ import namespace=\"System.Reflection\" " #>\#>
+\<#<#= "@ assembly name=\"EnvDTE\" " #>\#>
+\<#<#= "@ import namespace=\"EnvDTE\" " #>\#>
+<#
+	if(dllPath != "")
+    {
+        foreach (string dll in Directory.GetFiles(dllPath, "*.dll"))
+        {
+            if(dll != "")
+                #>\<#<#= "@ assembly name=\""+ dll +"\" "#>\#><#=""#><#
+        }
+#>\<#<#= "@ import namespace=\""+ projectNameBll +".Modelo\" "#>\#><#=""#><#
+    }
+#>
+\<#<#= "@ import namespace=\"Iteris\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Modelo.T4\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Utilitario\" " #>\#>
+\<#<#= "@ import namespace=\"PortalDeFluxos.Core.BLL.Negocio\" " #>\#>
+\<#<#= "@ output extension=\"Final.txt\" " #>\#>
+<#= @"
+
+#region [Propriedades]
+"#><#
+	var objectName = "";
+	if(entidades.Length > 0)
+    {
+        foreach (object entidadeNameBD in entidades)
+            if(entidadeNameBD != "")
+			{
+				objectName = "_proposta" + entidadeNameBD;
+				#><#= @"
+	private "+entidadeNameBD+" "+objectName+@";
+	"#><#
+			}                
+    }	
+#><#= @"
+#endregion
+
+#region [Load - Form]
+"#><#
+	if(entidades.Length > 0)
+    {
+        foreach (object entidadeNameBD in entidades)
+            if(entidadeNameBD != "")
+			{
+				objectName = "_proposta" + entidadeNameBD;
+				#><#= @"
+	protected void LoadFormControlsFrom"+entidadeNameBD+@"()
+	{" #>
+		\<#=<#= "NegocioGeradorTT.PopularCarregarControlesBD<" + entidadeNameBD + ">()" #>\#>
+	<#= @"}
+	
+	protected void Load"+entidadeNameBD+@"(Boolean defaultObject = false)
+	{
+		throw new NotImplementedException(""Verificar o método e depois apagar o NotImplementedException"");
+		//Mudar o código abaixo com a busca correta - o nome da propriedade id pode variar
+
+		"#><#="//"+objectName +" = " + objectName + " == null && CodigoItem > 0 ? new " + entidadeNameBD + "().Obter(_ => _.Id == CodigoItem) : "+ objectName+";"#><#= @"
+		"#><#="//if ("+ objectName +" == null && defaultObject)"#><#= @"
+		"#><#="//"+objectName +" = new "+ entidadeNameBD + "();"#><#= @"
+	}
+
+	protected void LoadFormFrom"+entidadeNameBD+@"()
+	{
+		if("+objectName+@" == null)
+			return;
+		
+		"#>\<#=<#= "NegocioGeradorTT.PopularCarregarDadosBD<" + entidadeNameBD + ">()" #>\#><#= @"
+	}
+
+	protected void Load"+entidadeNameBD+@"FromForm()
+	{
+		if("+objectName+@" == null)
+			return;
+
+		"#>\<#=<#= "NegocioGeradorTT.PopularSalvarBD<" + entidadeNameBD + ">()" #>\#><#= @"
+	}
+	"#><#	}                
+    }	
+#><#= @"
+#endregion
+
+#region [Métodos - Salvar]
+"#><#
+	if(entidades.Length > 0)
+    {
+        foreach (object entidadeNameBD in entidades)
+            if(entidadeNameBD != "")
+			{
+				objectName = "_proposta" + entidadeNameBD;
+				#><#= @"
+	protected void Salvar"+entidadeNameBD+@"()
+	{
+		throw new NotImplementedException(""Verificar o método e depois apagar o NotImplementedException"");
+		//Mudar o código abaixo com a busca correta - o nome da propriedade id pode variar
+		
+		if("+objectName+@" == null)
+			return;
+		
+		//if("+objectName+@".Id > 0)
+			 //"+objectName+@".Atualizar();
+		//else
+			//"+objectName+@".Inserir();
+	}
+	"#><#	}                
+    }	
+#><#= @"
+#endregion
+
+
+"#>
+<#@ output extension="Temp.tt" #>

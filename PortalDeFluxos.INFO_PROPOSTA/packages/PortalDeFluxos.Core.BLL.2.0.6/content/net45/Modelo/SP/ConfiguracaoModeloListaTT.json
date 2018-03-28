@@ -1,0 +1,15 @@
+﻿{
+    "UrlSite": "http://pi",
+    "ModelosListaSP": [
+        {
+            "NomeLista": "FormularioTeste",
+            "ListaProposta": true,
+            "NaoReiniciar": [ ]
+        },
+        {
+            "NomeLista": "FormularioTeste2",
+            "ListaProposta": false,
+            "NaoReiniciar": [ ]
+        }
+    ]
+}

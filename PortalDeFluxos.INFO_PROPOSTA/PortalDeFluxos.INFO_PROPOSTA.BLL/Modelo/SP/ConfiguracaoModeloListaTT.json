@@ -1,0 +1,10 @@
+﻿{
+    "UrlSite": "http://pi",
+    "ModelosListaSP": [
+        {
+            "NomeLista": "InformacoesDaProposta",
+            "ListaProposta": true,
+            "NaoReiniciar": [ ]
+        }
+    ]
+}
